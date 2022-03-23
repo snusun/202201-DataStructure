@@ -10,6 +10,10 @@ public class BigInteger
 
     // implement this
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile("[0-9]+|[-*+]?");
+    //public static char[] BigInt1, BigInt2;
+
+    public char sign = '+';
+    public char[] val = new char[100];
 
 
     public BigInteger(int i)
@@ -20,8 +24,16 @@ public class BigInteger
     {
     }
   
-    public BigInteger(String s)
+    public BigInteger(char sign, String s)
     {
+        this.sign = sign;
+        char[] temp = s.toCharArray();
+
+        int idx=100-temp.length;
+        for(char c: temp){
+            val[idx] = c;
+            idx++;
+        }
     }
   
     /*public BigInteger add(BigInteger big)
@@ -52,51 +64,59 @@ public class BigInteger
         // parse input
         // using regex is allowed
         String str = input.replaceAll("\\s", "");
-        //System.out.println(str);
         Matcher m = EXPRESSION_PATTERN.matcher(str);
         char sign1, sign2, operator;
-        String BigInt1, BigInt2;
-        String[] expression = new String[5];
+        String BigStr1, BigStr2;
+        String[] expression = new String[6];
 
         int i=0;
         while (m.find()){
             expression[i] = m.group();
             i++;
-            if(i==5) break;
         }
 
-        for(int k=0; k<expression.length; k++){
-            //if()
-            // idx == 0 일 때 숫자면 sign + , bigint1 저장
-            // 부호면 sign 저장, k++
-            // idx == 1 일 때
+        // parse input to operands and operator
+        if(expression[0].matches("[0-9]+")){
+            sign1 = '+';
+            BigStr1 = expression[0];
+            operator = expression[1].charAt(0);
+            if(expression[2].matches("[0-9]+")){
+                sign2 = '+';
+                BigStr2 = expression[2];
+            } else {
+                sign2 = expression[2].charAt(0);
+                BigStr2 = expression[3];
+            }
+        } else {
+            sign1 = expression[0].charAt(0);
+            BigStr1 = expression[1];
+            operator = expression[2].charAt(0);
+            if(expression[3].matches("[0-9]+")){
+                sign2 = '+';
+                BigStr2 = expression[3];
+            } else {
+                sign2 = expression[3].charAt(0);
+                BigStr2 = expression[4];
+            }
         }
 
+        //BigInt1 = BigStr1.toCharArray();
+        //BigInt2 = BigStr2.toCharArray();
+        System.out.println(sign1 + " " + BigStr1 + " " + operator + " " + sign2 + " " + BigStr2);
 
-        /*switch (m.group().length()){
-            case 3:
-                sign1 = sign2 = '+';
-                BigInt1
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            default:
-                // invalid input
-                break;
-        }*/
+        BigInteger bigInt1 = new BigInteger(sign1, BigStr1);
+        BigInteger bigInt2 = new BigInteger(sign2, BigStr2);
+        for(int k=0; k<bigInt1.val.length; k++){
+            System.out.print(bigInt1.val[k]);
+        }
+        System.out.println();
+        System.out.println(bigInt1.val.length);
+        for(char c: bigInt2.val){
+            System.out.print(c);
+        }
+        System.out.println();
+        System.out.println(bigInt2.val.length);
 
-        /*String[] parse = input.split("-*+ ");
-        for(String s: parse){
-            System.out.println(s);
-        }*/
-  
-        // One possible implementation
-        // BigInteger num1 = new BigInteger(arg1);
-        // BigInteger num2 = new BigInteger(arg2);
-        // BigInteger result = num1.add(num2);
-        //return result;
         return new BigInteger(10);
     }
   
