@@ -10,17 +10,15 @@ public class BigInteger
 
     // implement this
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile("[0-9]+|[-*+]?");
-    //public static char[] BigInt1, BigInt2;
 
     public char sign = '+';
-    public char[] val = new char[100];
-
+    public int[] val = new int[200];
 
     public BigInteger(int i)
     {
     }
   
-    public BigInteger(int[] num1)
+    public BigInteger(int[] ans)
     {
     }
   
@@ -29,31 +27,66 @@ public class BigInteger
         this.sign = sign;
         char[] temp = s.toCharArray();
 
-        int idx=100-temp.length;
+        int idx=200-temp.length;
         for(char c: temp){
-            val[idx] = c;
+            val[idx] = c - '0';
             idx++;
         }
     }
   
-    /*public BigInteger add(BigInteger big)
+    public BigInteger add(BigInteger big)
     {
         // 사이즈 작은거 for 문 해서 뒤에서부터 더하기, 올림 수 저장
         // 101 자리
+        BigInteger ans = new BigInteger(0);
+
+        int carry = 0;
+        for(int i=199; i>=100; i--){
+            int sum = val[i] + big.val[i];
+            if(sum/10==1){
+                carry = 1;
+                sum %= 10;
+            } else {
+                carry = 0;
+            }
+            ans.val[i] += sum;
+            ans.val[i-1] += carry;
+        }
+        return ans;
     }
   
     public BigInteger subtract(BigInteger big)
     {
         // // 사이즈 작은거 for 문 해서 뒤에서부터 빼기, 내림 수 저장
         // 101 자리
+        BigInteger ans = new BigInteger(0);
+        return ans;
     }
 
     public BigInteger multiply(BigInteger big)
     {
         // 200 자리
+        BigInteger ans = new BigInteger(0);
+
+        int carry;
+        for(int i=199; i>=100; i--){
+            for(int j=199; j>=100; j--){
+                int mul = val[i] * big.val[j];
+                if(mul>9){
+                    carry = mul/10;
+                    mul %= 10;
+                } else {
+                    carry = 0;
+                }
+                ans.val[i+j-199] += mul;
+                ans.val[i+j-200] += carry;
+            }
+        }
+
+        return ans;
     }
   
-    @Override
+    /*@Override
     public String toString()
     {
     }*/
@@ -100,8 +133,6 @@ public class BigInteger
             }
         }
 
-        //BigInt1 = BigStr1.toCharArray();
-        //BigInt2 = BigStr2.toCharArray();
         System.out.println(sign1 + " " + BigStr1 + " " + operator + " " + sign2 + " " + BigStr2);
 
         BigInteger bigInt1 = new BigInteger(sign1, BigStr1);
@@ -110,14 +141,39 @@ public class BigInteger
             System.out.print(bigInt1.val[k]);
         }
         System.out.println();
-        System.out.println(bigInt1.val.length);
-        for(char c: bigInt2.val){
-            System.out.print(c);
+        //System.out.println(bigInt1.val.length);
+        for(int n: bigInt2.val){
+            System.out.print(n);
         }
         System.out.println();
-        System.out.println(bigInt2.val.length);
+        //System.out.println(bigInt2.val.length);
 
-        return new BigInteger(10);
+        BigInteger answer = null;
+        // sign 도 고려해서 해야함
+        // + - / - + / + + / - -
+        System.out.println(operator);
+        switch (operator){
+            case '+':
+                // + + 이면 끝나고 양수
+                // - - 이면 끝나고 - 달기
+                System.out.println("add");
+                answer = bigInt1.add(bigInt2);
+                break;
+            case '-':
+                // - + / + -
+                // 크기 비교한 다음 계산하고 부호 달기
+                answer = bigInt1.subtract(bigInt2);
+                break;
+            case '*':
+                // 같은 부호면 마지막에 + 달기, 다른 부호면 마지막에 - 달기
+                System.out.println("multiply");
+                answer = bigInt1.multiply(bigInt2);
+                break;
+            default:
+                break;
+        }
+
+        return answer;
     }
   
     public static void main(String[] args) throws Exception
@@ -155,7 +211,11 @@ public class BigInteger
         else
         {
             BigInteger result = evaluate(input);
-            System.out.println(result.toString());
+            for(int n: result.val){
+                System.out.print(n);
+            }
+            System.out.println();
+            //System.out.println(result.toString());
   
             return false;
         }
