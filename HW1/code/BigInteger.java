@@ -36,30 +36,64 @@ public class BigInteger
   
     public BigInteger add(BigInteger big)
     {
-        // 사이즈 작은거 for 문 해서 뒤에서부터 더하기, 올림 수 저장
-        // 101 자리
         BigInteger ans = new BigInteger(0);
 
         int carry = 0;
         for(int i=199; i>=100; i--){
+            //System.out.println("idx:" + i);
             int sum = val[i] + big.val[i];
-            if(sum/10==1){
-                carry = 1;
+            //System.out.println(sum + " val: " + val[i] + " big.val " +big.val[i]);
+            if(sum/10>=1){
+                carry = sum/10;
                 sum %= 10;
             } else {
                 carry = 0;
             }
-            ans.val[i] += sum;
+            //System.out.println("carry: " + carry + " sum: " + sum);
+            if((ans.val[i]+sum)>=10){
+                ans.val[i] = (ans.val[i]+sum)%10;
+                ans.val[i-1] += (ans.val[i]+sum)/10;
+                carry = 1;
+            } else ans.val[i] += sum;
             ans.val[i-1] += carry;
+            //System.out.println("ans.val[" + i + "]: " + ans.val[i]);
         }
+        //System.out.println();
         return ans;
     }
   
-    public BigInteger subtract(BigInteger big)
+    public BigInteger subtract(BigInteger big) // 항상 큰수에서 작은 수 빼기
     {
-        // // 사이즈 작은거 for 문 해서 뒤에서부터 빼기, 내림 수 저장
-        // 101 자리
         BigInteger ans = new BigInteger(0);
+
+        int idx=-1;
+        for(int i=0; i<val.length; i++){
+            if(val[i]!=0){
+                idx = i;
+                break;
+            }
+        }
+
+        for(int i=199; i>=idx; i--){
+            //System.out.println("idx: " + i + " " + val[i] + " " + big.val[i]);
+            if(val[i] >= big.val[i]) {
+                ans.val[i] = val[i] - big.val[i];
+            } else {
+                int j = i-2;
+                if(val[i-1]!=0){
+                    val[i-1] -=1;
+                } else {
+                    val[i-1] = 9;
+                    while (val[j]==0){
+                        val[j] = 9;
+                        j-=1;
+                    }
+                    val[j]-=1;
+                }
+                ans.val[i] = 10 + val[i] - big.val[i];
+            }
+        }
+
         return ans;
     }
 
@@ -86,26 +120,16 @@ public class BigInteger
         return ans;
     }
 
-    /*public void printResult(boolean sign){
-        // true -> +
-        // false -> -
-        int idx=-1;
+    public Boolean isBigger(BigInteger big){ // bigger or equal
         for(int i=0; i<val.length; i++){
-            if(val[i]!=0){
-                idx = i;
-                break;
+            if(val[i] < big.val[i]){
+                return false;
+            } else if(val[i] > big.val[i]) {
+                return true;
             }
         }
-        if(idx==-1){
-            System.out.println(0);
-        } else {
-            if(!sign) System.out.print('-');
-            for(; idx<val.length; idx++){
-                System.out.print(val[idx]);
-            }
-            System.out.println();
-        }
-    }*/
+        return true;
+    }
   
     @Override
     public String toString()
@@ -119,7 +143,8 @@ public class BigInteger
             }
         }
         if(idx==-1){
-            System.out.println(0);
+            result="0";
+            return result;
         } else {
             for(; idx<val.length; idx++){
                 result += val[idx];
@@ -170,46 +195,47 @@ public class BigInteger
             }
         }
 
-        System.out.println(sign1 + " " + BigStr1 + " " + operator + " " + sign2 + " " + BigStr2);
+        //System.out.println(sign1 + " " + BigStr1 + " " + operator + " " + sign2 + " " + BigStr2);
 
         BigInteger bigInt1 = new BigInteger(sign1, BigStr1);
         BigInteger bigInt2 = new BigInteger(sign2, BigStr2);
-//        for(int k=0; k<bigInt1.val.length; k++){
-//            System.out.print(bigInt1.val[k]);
-//        }
-//        System.out.println();
-//        for(int n: bigInt2.val){
-//            System.out.print(n);
-//        }
-//        System.out.println();
-
         BigInteger answer = null;
-        // sign 도 고려해서 해야함
-        // + - / - + / + + / - -
-        //System.out.println(operator);
+
         char s1 = bigInt1.sign;
         char s2 = bigInt2.sign;
         if((s1=='+' && s2=='+' && operator=='+') || (s1=='+' && s2=='-' && operator=='-')){
             // add +
-            System.out.println("add");
+            //System.out.println("add");
             answer = bigInt1.add(bigInt2);
         } else if((s1=='-' && s2=='-' && operator=='+') || (s1=='-' && s2=='+' && operator=='-')){
             // add -
-            System.out.println("add");
+            //System.out.println("add");
             answer = bigInt1.add(bigInt2);
-            // 부호 붙이기
+            answer.sign = '-';
         } else if((s1!=s2 && operator=='+') || (s1==s2 && operator=='-')){
             // subtract
-            answer = bigInt1.subtract(bigInt2);
+            //System.out.println("subtract");
+            if(bigInt1.isBigger(bigInt2)){
+                //System.out.println("big1 is bigger");
+                answer = bigInt1.subtract(bigInt2);
+                answer.sign = bigInt1.sign;
+            } else {
+                //System.out.println("big2 is bigger");
+                answer = bigInt2.subtract(bigInt1);
+                answer.sign = bigInt2.sign;
+                if(operator=='-' && bigInt2.sign=='+') answer.sign = '-';
+                if(operator=='-' && bigInt2.sign=='-') answer.sign = '+';
+            }
+            //answer = bigInt1.subtract(bigInt2);
         } else if(s1==s2 && operator=='*'){
             // equal sign *
-            System.out.println("multiply");
+            //System.out.println("multiply");
             answer = bigInt1.multiply(bigInt2);
         } else if(s1!=s2 && operator=='*'){
             // different sign *
-            System.out.println("multiply");
+            //System.out.println("multiply");
             answer = bigInt1.multiply(bigInt2);
-            // 부호 붙이기
+            answer.sign = '-';
         }
 
         return answer;
@@ -250,11 +276,9 @@ public class BigInteger
         else
         {
             BigInteger result = evaluate(input);
-//            for(int n: result.val){
-//                System.out.print(n);
-//            }
-//            System.out.println();
-            System.out.println(result.toString());
+            if(result.toString().equals("0")) result.sign='+';
+            if(result.sign=='-') System.out.print('-');
+            System.out.println(result);
   
             return false;
         }
