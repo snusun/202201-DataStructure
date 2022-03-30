@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class BigInteger
 {
     public static final String QUIT_COMMAND = "quit";
-    public static final String MSG_INVALID_INPUT = "입력이 잘못되었습니다."; // 에러날 시 영어로 바꾸기 가능
+    public static final String MSG_INVALID_INPUT = "INVALID INPUT";
 
     // implement this
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile("[0-9]+|[-*+]?");
@@ -38,31 +38,26 @@ public class BigInteger
     {
         BigInteger ans = new BigInteger(0);
 
-        int carry = 0;
+        int carry;
         for(int i=199; i>=100; i--){
-            //System.out.println("idx:" + i);
             int sum = val[i] + big.val[i];
-            //System.out.println(sum + " val: " + val[i] + " big.val " +big.val[i]);
             if(sum/10>=1){
                 carry = sum/10;
                 sum %= 10;
             } else {
                 carry = 0;
             }
-            //System.out.println("carry: " + carry + " sum: " + sum);
             if((ans.val[i]+sum)>=10){
                 ans.val[i] = (ans.val[i]+sum)%10;
                 ans.val[i-1] += (ans.val[i]+sum)/10;
                 carry = 1;
             } else ans.val[i] += sum;
             ans.val[i-1] += carry;
-            //System.out.println("ans.val[" + i + "]: " + ans.val[i]);
         }
-        //System.out.println();
         return ans;
     }
   
-    public BigInteger subtract(BigInteger big) // 항상 큰수에서 작은 수 빼기
+    public BigInteger subtract(BigInteger big)
     {
         BigInteger ans = new BigInteger(0);
 
@@ -75,7 +70,6 @@ public class BigInteger
         }
 
         for(int i=199; i>=idx; i--){
-            //System.out.println("idx: " + i + " " + val[i] + " " + big.val[i]);
             if(val[i] >= big.val[i]) {
                 ans.val[i] = val[i] - big.val[i];
             } else {
@@ -99,34 +93,25 @@ public class BigInteger
 
     public BigInteger multiply(BigInteger big)
     {
-        // 200 자리
         BigInteger ans = new BigInteger(0);
 
-        int carry;
-        for(int i=199; i>=100; i--){
-            for(int j=199; j>=100; j--){
-                int mul = val[i] * big.val[j];
-                if(mul>9){
-                    carry = mul/10;
-                    mul %= 10;
-                } else {
-                    carry = 0;
-                }
+        for(int i=199;i>=100;i--){
+            for(int j=199;j>=100;j--){
+                ans.val[i+j-199] += val[j] * big.val[i];
+            }
+        }
 
-                if((ans.val[i+j-199]+mul)>=10){
-                    ans.val[i+j-199] = (ans.val[i+j-199]+mul)%10;
-                    ans.val[i+j-200] += (ans.val[i+j-199]+mul)/10;
-                    //carry++;
-                } else ans.val[i+j-199] += mul;
-                ans.val[i+j-200] += carry;
-                //if(ans.val[i+j-199] != 0) System.out.println(ans.val[i+j-199]);
+        for(int i=199;i>=0;i--){
+            while( ans.val[i] >= 10 ){
+                ans.val[i-1] += ans.val[i]/10;
+                ans.val[i] = ans.val[i]%10;
             }
         }
 
         return ans;
     }
 
-    public Boolean isBigger(BigInteger big){ // bigger or equal
+    public Boolean isBigger(BigInteger big){
         for(int i=0; i<val.length; i++){
             if(val[i] < big.val[i]){
                 return false;
@@ -201,8 +186,6 @@ public class BigInteger
             }
         }
 
-        //System.out.println(sign1 + " " + BigStr1 + " " + operator + " " + sign2 + " " + BigStr2);
-
         BigInteger bigInt1 = new BigInteger(sign1, BigStr1);
         BigInteger bigInt2 = new BigInteger(sign2, BigStr2);
         BigInteger answer = null;
@@ -210,36 +193,23 @@ public class BigInteger
         char s1 = bigInt1.sign;
         char s2 = bigInt2.sign;
         if((s1=='+' && s2=='+' && operator=='+') || (s1=='+' && s2=='-' && operator=='-')){
-            // add +
-            //System.out.println("add");
-            answer = bigInt1.add(bigInt2);
+             answer = bigInt1.add(bigInt2);
         } else if((s1=='-' && s2=='-' && operator=='+') || (s1=='-' && s2=='+' && operator=='-')){
-            // add -
-            //System.out.println("add");
             answer = bigInt1.add(bigInt2);
             answer.sign = '-';
         } else if((s1!=s2 && operator=='+') || (s1==s2 && operator=='-')){
-            // subtract
-            //System.out.println("subtract");
-            if(bigInt1.isBigger(bigInt2)){
-                //System.out.println("big1 is bigger");
+             if(bigInt1.isBigger(bigInt2)){
                 answer = bigInt1.subtract(bigInt2);
                 answer.sign = bigInt1.sign;
             } else {
-                //System.out.println("big2 is bigger");
                 answer = bigInt2.subtract(bigInt1);
                 answer.sign = bigInt2.sign;
                 if(operator=='-' && bigInt2.sign=='+') answer.sign = '-';
                 if(operator=='-' && bigInt2.sign=='-') answer.sign = '+';
             }
-            //answer = bigInt1.subtract(bigInt2);
         } else if(s1==s2 && operator=='*'){
-            // equal sign *
-            //System.out.println("multiply");
             answer = bigInt1.multiply(bigInt2);
         } else if(s1!=s2 && operator=='*'){
-            // different sign *
-            //System.out.println("multiply");
             answer = bigInt1.multiply(bigInt2);
             answer.sign = '-';
         }
