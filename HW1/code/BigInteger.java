@@ -85,11 +85,48 @@ public class BigInteger
 
         return ans;
     }
+
+    /*public void printResult(boolean sign){
+        // true -> +
+        // false -> -
+        int idx=-1;
+        for(int i=0; i<val.length; i++){
+            if(val[i]!=0){
+                idx = i;
+                break;
+            }
+        }
+        if(idx==-1){
+            System.out.println(0);
+        } else {
+            if(!sign) System.out.print('-');
+            for(; idx<val.length; idx++){
+                System.out.print(val[idx]);
+            }
+            System.out.println();
+        }
+    }*/
   
-    /*@Override
+    @Override
     public String toString()
     {
-    }*/
+        String result = "";
+        int idx=-1;
+        for(int i=0; i<val.length; i++){
+            if(val[i]!=0){
+                idx = i;
+                break;
+            }
+        }
+        if(idx==-1){
+            System.out.println(0);
+        } else {
+            for(; idx<val.length; idx++){
+                result += val[idx];
+            }
+        }
+        return result;
+    }
   
     static BigInteger evaluate(String input) throws IllegalArgumentException
     {
@@ -137,40 +174,42 @@ public class BigInteger
 
         BigInteger bigInt1 = new BigInteger(sign1, BigStr1);
         BigInteger bigInt2 = new BigInteger(sign2, BigStr2);
-        for(int k=0; k<bigInt1.val.length; k++){
-            System.out.print(bigInt1.val[k]);
-        }
-        System.out.println();
-        //System.out.println(bigInt1.val.length);
-        for(int n: bigInt2.val){
-            System.out.print(n);
-        }
-        System.out.println();
-        //System.out.println(bigInt2.val.length);
+//        for(int k=0; k<bigInt1.val.length; k++){
+//            System.out.print(bigInt1.val[k]);
+//        }
+//        System.out.println();
+//        for(int n: bigInt2.val){
+//            System.out.print(n);
+//        }
+//        System.out.println();
 
         BigInteger answer = null;
         // sign 도 고려해서 해야함
         // + - / - + / + + / - -
-        System.out.println(operator);
-        switch (operator){
-            case '+':
-                // + + 이면 끝나고 양수
-                // - - 이면 끝나고 - 달기
-                System.out.println("add");
-                answer = bigInt1.add(bigInt2);
-                break;
-            case '-':
-                // - + / + -
-                // 크기 비교한 다음 계산하고 부호 달기
-                answer = bigInt1.subtract(bigInt2);
-                break;
-            case '*':
-                // 같은 부호면 마지막에 + 달기, 다른 부호면 마지막에 - 달기
-                System.out.println("multiply");
-                answer = bigInt1.multiply(bigInt2);
-                break;
-            default:
-                break;
+        //System.out.println(operator);
+        char s1 = bigInt1.sign;
+        char s2 = bigInt2.sign;
+        if((s1=='+' && s2=='+' && operator=='+') || (s1=='+' && s2=='-' && operator=='-')){
+            // add +
+            System.out.println("add");
+            answer = bigInt1.add(bigInt2);
+        } else if((s1=='-' && s2=='-' && operator=='+') || (s1=='-' && s2=='+' && operator=='-')){
+            // add -
+            System.out.println("add");
+            answer = bigInt1.add(bigInt2);
+            // 부호 붙이기
+        } else if((s1!=s2 && operator=='+') || (s1==s2 && operator=='-')){
+            // subtract
+            answer = bigInt1.subtract(bigInt2);
+        } else if(s1==s2 && operator=='*'){
+            // equal sign *
+            System.out.println("multiply");
+            answer = bigInt1.multiply(bigInt2);
+        } else if(s1!=s2 && operator=='*'){
+            // different sign *
+            System.out.println("multiply");
+            answer = bigInt1.multiply(bigInt2);
+            // 부호 붙이기
         }
 
         return answer;
@@ -211,11 +250,11 @@ public class BigInteger
         else
         {
             BigInteger result = evaluate(input);
-            for(int n: result.val){
-                System.out.print(n);
-            }
-            System.out.println();
-            //System.out.println(result.toString());
+//            for(int n: result.val){
+//                System.out.print(n);
+//            }
+//            System.out.println();
+            System.out.println(result.toString());
   
             return false;
         }
