@@ -112,8 +112,14 @@ public class BigInteger
                 } else {
                     carry = 0;
                 }
-                ans.val[i+j-199] += mul;
+
+                if((ans.val[i+j-199]+mul)>=10){
+                    ans.val[i+j-199] = (ans.val[i+j-199]+mul)%10;
+                    ans.val[i+j-200] += (ans.val[i+j-199]+mul)/10;
+                    //carry++;
+                } else ans.val[i+j-199] += mul;
                 ans.val[i+j-200] += carry;
+                //if(ans.val[i+j-199] != 0) System.out.println(ans.val[i+j-199]);
             }
         }
 
