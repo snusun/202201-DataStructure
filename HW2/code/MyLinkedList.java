@@ -83,6 +83,7 @@ class MyLinkedListIterator<T> implements Iterator<T> {
 	public T next() {
 		if (!hasNext())
 			throw new NoSuchElementException();
+			// return null;
 
 		prev = curr;
 		curr = curr.getNext();
