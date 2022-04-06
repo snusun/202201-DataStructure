@@ -25,7 +25,7 @@ public class MyLinkedList<T> implements ListInterface<T> {
      * @see SearchCmd#apply(MovieDB)
      * @see java.lang.Iterable#iterator()
      */
-    public final Iterator<T> iterator() {
+    public Iterator<T> iterator() {
     	return new MyLinkedListIterator<T>(this);
     }
 
