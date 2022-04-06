@@ -124,11 +124,13 @@ class MovieList extends MyLinkedList<String> implements ListInterface<String> {
 
     @Override
     public void add(String item) {
-        // 현재 꺼보단 크고 next 보단 작은 경우 거기 add
-        if(isEmpty()){
+        if (isEmpty()) {
             super.add(item);
-        } else if(size()==1){
-            if(first().compareTo(item) > 0) {
+        } else if (size() == 1) {
+            if (first().compareTo(item) == 0) {
+                return;
+            }
+            if (first().compareTo(item) > 0) {
                 head.insertNext(item);
             } else {
                 head.getNext().insertNext(item);
@@ -136,22 +138,27 @@ class MovieList extends MyLinkedList<String> implements ListInterface<String> {
             numItems += 1;
         } else {
             Node<String> prev = head;
-            Node<String> last = head.getNext();
-            while (last.getNext() != null) {
-                if(last.getItem().compareTo(item) > 0){
-                    last = prev;
+            Node<String> curr = head.getNext();
+            while (curr.getNext()!=null){
+                if(curr.getItem().compareTo(item) == 0){
+                    curr = null;
+                    break;
+                } else if(curr.getItem().compareTo(item) > 0) {
+                    curr = prev;
+                    break;
+                } else if(curr.getItem().compareTo(item) < 0 && curr.getNext().getItem().compareTo(item) > 0){
                     break;
                 }
-                if(last.getItem().compareTo(item) < 0 && last.getNext().getItem().compareTo(item) > 0){
-                    break;
-                }
-                last = last.getNext();
+                prev = curr;
+                curr = curr.getNext();
             }
-            last.insertNext(item);
+            if(curr==null){
+                return;
+            } else {
+                curr.insertNext(item);
+            }
             numItems += 1;
         }
-
-        //super.add(item);
         //throw new UnsupportedOperationException("not implemented yet");
     }
 
