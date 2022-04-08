@@ -1,5 +1,4 @@
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Genre, Title 을 관리하는 영화 데이터베이스.
@@ -8,16 +7,39 @@ import java.util.NoSuchElementException;
  * 유지하는 데이터베이스이다.
  */
 public class MovieDB {
+    static MyLinkedList<MovieList> movieDB;
     public MovieDB() {
         // FIXME implement this
         // HINT: MovieDBGenre 클래스를 정렬된 상태로 유지하기 위한
         // MyLinkedList 타입의 멤버 변수를 초기화 한다.
-        MyLinkedList<MyLinkedList<String>> movieDB = new MyLinkedList<>();
+        movieDB = new MyLinkedList<>();
     }
 
     public void insert(MovieDBItem item) {
         // FIXME implement this
         // Insert the given item to the MovieDB.
+        //movieDB.add(new MovieList());
+        Node<MovieList> curr = movieDB.head;
+        while(curr!=null){
+            Genre genre = (Genre) curr.getItem().head;
+            if(genre.getItem().equals(item.getGenre())) { // 장르가 있는 경우
+                MovieList movieList = curr.getItem();
+                Node<String> currNode = movieList.head;
+                while(currNode!=null){
+                    if(currNode.getItem().equals(item.getTitle())){
+                        return;
+                    }
+                    currNode = currNode.getNext();
+                }
+                curr.getItem().add(item.getTitle());
+                    // 목록에 있으면 return 없으면 넣기 후 return
+            }
+            curr = curr.getNext();
+        }
+        MovieList newMovieList = new MovieList(item.getGenre());
+        newMovieList.add(item.getTitle());
+        movieDB.add(newMovieList);
+        // 장르와 제목 함께 추가
 
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
@@ -72,6 +94,22 @@ public class MovieDB {
         // This code is supplied for avoiding compilation error.
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
 
+        Node<MovieList> curr = movieDB.head;
+        while (curr!=null){
+            //MovieList currList = curr.getItem();
+
+            MovieList movieList = curr.getItem();
+            Genre genre = (Genre) movieList.head;
+            Node<String> currNode = movieList.head;
+            while(currNode!=null){
+                MovieDBItem movie = new MovieDBItem(genre.getItem(), currNode.getItem());
+                results.add(movie);
+                currNode = currNode.getNext();
+            }
+
+            curr=curr.getNext();
+        }
+
         return results;
     }
 }
@@ -102,13 +140,18 @@ class Genre extends Node<String> implements Comparable<Genre> {
 
 class MovieList extends MyLinkedList<String> implements ListInterface<String> {
     public MovieList() {
-        head = new Genre("temp"); // 일단 이렇게 해두기 원래 null (test용)
+        //head = new Genre(); // 일단 이렇게 해두기 원래 null (test용)
     }
 
-//    @Override
-//    public Iterator<String> iterator() {
-//        throw new UnsupportedOperationException("not implemented yet");
-//    }
+    public MovieList(String name){
+        head = new Genre(name);
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        return super.iterator();
+        //throw new UnsupportedOperationException("not implemented yet");
+    }
 
     @Override
     public boolean isEmpty() {
