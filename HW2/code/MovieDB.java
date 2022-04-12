@@ -19,6 +19,20 @@ public class MovieDB {
         // FIXME implement this
         // Insert the given item to the MovieDB.
         //movieDB.add(new MovieList());
+
+        if(movieDB.isEmpty()) {
+            System.out.println(true);
+            // db에 장르 리스트 생성해서 추가
+        } else {
+            // db에 해당 장르가 있는지 확인
+            // -> 있으면
+                // 해당 작품이 있는지 확인
+                    // -> 있으면 return
+                    // -> 없으면 작품 추가
+            // -> 없으면 장르 리스트 생성해서 추가 -> 위 If문에서와 동일
+        }
+
+        /*
         Node<MovieList> curr = movieDB.head;
         while(curr!=null){
             Genre genre = (Genre) curr.getItem().head;
@@ -40,10 +54,11 @@ public class MovieDB {
         newMovieList.add(item.getTitle());
         movieDB.add(newMovieList);
         // 장르와 제목 함께 추가
+        */
 
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
-        System.err.printf("[trace] MovieDB: INSERT [%s] [%s]\n", item.getGenre(), item.getTitle());
+        //System.err.printf("[trace] MovieDB: INSERT [%s] [%s]\n", item.getGenre(), item.getTitle());
     }
 
     public void delete(MovieDBItem item) {
@@ -51,6 +66,17 @@ public class MovieDB {
         // Remove the given item from the MovieDB.
 
         // use iterator
+        if(movieDB.isEmpty()) {
+            System.out.println(true);
+            // return
+        } else {
+            // db에 해당 장르가 있는지 확인
+            // -> 있으면
+                // 해당 작품이 있는지 확인
+                    // -> 있으면 iterator 이용해 삭제
+                    // -> 없으면 return
+            // -> 없으면 return
+        }
 
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
@@ -69,6 +95,8 @@ public class MovieDB {
         // This tracing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
         System.err.printf("[trace] MovieDB: SEARCH [%s]\n", term);
+
+        // 이건 그냥 쭉 순회하다가 조건에 만족하면 list에 추가
 
         // FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
         // This code is supplied for avoiding compilation error.
@@ -89,6 +117,8 @@ public class MovieDB {
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
         System.err.printf("[trace] MovieDB: ITEMS\n");
+
+        // 이건 그냥 쭉 순회하며 list에 추가
 
         // FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
         // This code is supplied for avoiding compilation error.
