@@ -45,11 +45,11 @@ public class MovieDB {
                     }
                     // -> 없으면 작품 추가
                     currMovieList.getItem().add(item.getTitle());
-                    //currMovieList.setItem();
+                    return;
                 }
                 currMovieList = currMovieList.getNext();
             }
-            // -> 없으면 장르 리스트 생성해서 추가 -> 위 If문에서와 동일
+            // -> 없으면 장르 리스트 생성해서 추가
             MovieList movieList = new MovieList(item.getGenre());
             movieList.add(item.getTitle());
             movieDB.add(movieList); // 근데 의문 장르 순으로 정렬은 어떻게..?
@@ -93,13 +93,26 @@ public class MovieDB {
 
         // This tracing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
-        System.err.printf("[trace] MovieDB: SEARCH [%s]\n", term);
-
-        // 이건 그냥 쭉 순회하다가 조건에 만족하면 list에 추가
+        //System.err.printf("[trace] MovieDB: SEARCH [%s]\n", term);
 
         // FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
         // This code is supplied for avoiding compilation error.
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
+
+        if (!movieDB.isEmpty()) {
+            Node<MovieList> currMovieList = movieDB.head.getNext();
+            while (currMovieList != null) {
+                String genre = currMovieList.getItem().head.getItem();
+                Node<String> currMovie = currMovieList.getItem().head.getNext();
+                while (currMovie != null) {
+                    if(currMovie.getItem().contains(term)){
+                        results.add(new MovieDBItem(genre, currMovie.getItem()));
+                    }
+                    currMovie = currMovie.getNext();
+                }
+                currMovieList = currMovieList.getNext();
+            }
+        }
 
         return results;
     }
