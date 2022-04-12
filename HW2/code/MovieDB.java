@@ -8,6 +8,7 @@ import java.util.Iterator;
  */
 public class MovieDB {
     static MyLinkedList<MovieList> movieDB;
+
     public MovieDB() {
         // FIXME implement this
         // HINT: MovieDBGenre 클래스를 정렬된 상태로 유지하기 위한
@@ -18,43 +19,41 @@ public class MovieDB {
     public void insert(MovieDBItem item) {
         // FIXME implement this
         // Insert the given item to the MovieDB.
-        //movieDB.add(new MovieList());
 
-        if(movieDB.isEmpty()) {
-            System.out.println(true);
+        if (movieDB.isEmpty()) {
             // db에 장르 리스트 생성해서 추가
+            MovieList movieList = new MovieList(item.getGenre());
+            movieList.add(item.getTitle());
+            movieDB.add(movieList);
+            //System.out.println("insert finish");
         } else {
-            // db에 해당 장르가 있는지 확인
-            // -> 있으면
-                // 해당 작품이 있는지 확인
-                    // -> 있으면 return
-                    // -> 없으면 작품 추가
-            // -> 없으면 장르 리스트 생성해서 추가 -> 위 If문에서와 동일
-        }
-
-        /*
-        Node<MovieList> curr = movieDB.head;
-        while(curr!=null){
-            Genre genre = (Genre) curr.getItem().head;
-            if(genre.getItem().equals(item.getGenre())) { // 장르가 있는 경우
-                MovieList movieList = curr.getItem();
-                Node<String> currNode = movieList.head;
-                while(currNode!=null){
-                    if(currNode.getItem().equals(item.getTitle())){
-                        return;
+            // head는 비어있음
+            Node<MovieList> currMovieList = movieDB.head.getNext();
+            //System.out.println(currMovieList.getItem().head.getItem()); // genre
+            while (currMovieList != null) {
+                String genre = currMovieList.getItem().head.getItem();
+                // db에 해당 장르가 있는지 확인
+                if (genre.equals(item.getGenre())) { // -> 장르가 있으면
+                    Node<String> currMovie = currMovieList.getItem().head.getNext();
+                    while (currMovie != null) {
+                        // 해당 작품이 있는지 확인
+                        // -> 있으면 return
+                        if (currMovie.getItem().equals(item.getTitle())) {
+                            return;
+                        }
+                        currMovie = currMovie.getNext();
                     }
-                    currNode = currNode.getNext();
+                    // -> 없으면 작품 추가
+                    currMovieList.getItem().add(item.getTitle());
+                    //currMovieList.setItem();
                 }
-                curr.getItem().add(item.getTitle());
-                    // 목록에 있으면 return 없으면 넣기 후 return
+                currMovieList = currMovieList.getNext();
             }
-            curr = curr.getNext();
+            // -> 없으면 장르 리스트 생성해서 추가 -> 위 If문에서와 동일
+            MovieList movieList = new MovieList(item.getGenre());
+            movieList.add(item.getTitle());
+            movieDB.add(movieList); // 근데 의문 장르 순으로 정렬은 어떻게..?
         }
-        MovieList newMovieList = new MovieList(item.getGenre());
-        newMovieList.add(item.getTitle());
-        movieDB.add(newMovieList);
-        // 장르와 제목 함께 추가
-        */
 
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
@@ -66,15 +65,15 @@ public class MovieDB {
         // Remove the given item from the MovieDB.
 
         // use iterator
-        if(movieDB.isEmpty()) {
+        if (movieDB.isEmpty()) {
             System.out.println(true);
             // return
         } else {
             // db에 해당 장르가 있는지 확인
             // -> 있으면
-                // 해당 작품이 있는지 확인
-                    // -> 있으면 iterator 이용해 삭제
-                    // -> 없으면 return
+            // 해당 작품이 있는지 확인
+            // -> 있으면 iterator 이용해 삭제
+            // -> 없으면 return
             // -> 없으면 return
         }
 
@@ -116,28 +115,25 @@ public class MovieDB {
 
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
-        System.err.printf("[trace] MovieDB: ITEMS\n");
-
-        // 이건 그냥 쭉 순회하며 list에 추가
+        //System.err.printf("[trace] MovieDB: ITEMS\n");
 
         // FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
         // This code is supplied for avoiding compilation error.
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
 
-        Node<MovieList> curr = movieDB.head;
-        while (curr!=null){
-            //MovieList currList = curr.getItem();
-
-            MovieList movieList = curr.getItem();
-            Genre genre = (Genre) movieList.head;
-            Node<String> currNode = movieList.head;
-            while(currNode!=null){
-                MovieDBItem movie = new MovieDBItem(genre.getItem(), currNode.getItem());
-                results.add(movie);
-                currNode = currNode.getNext();
+        if (!movieDB.isEmpty()) { // 이건 그냥 쭉 순회하며 list에 추가
+            // head는 비어있음
+            Node<MovieList> currMovieList = movieDB.head.getNext();
+            //System.out.println(currMovieList.getItem().head.getItem()); // genre
+            while (currMovieList != null) {
+                String genre = currMovieList.getItem().head.getItem();
+                Node<String> currMovie = currMovieList.getItem().head.getNext();
+                while (currMovie != null) {
+                    results.add(new MovieDBItem(genre, currMovie.getItem()));
+                    currMovie = currMovie.getNext();
+                }
+                currMovieList = currMovieList.getNext();
             }
-
-            curr=curr.getNext();
         }
 
         return results;
@@ -173,7 +169,7 @@ class MovieList extends MyLinkedList<String> implements ListInterface<String> {
         //head = new Genre(); // 일단 이렇게 해두기 원래 null (test용)
     }
 
-    public MovieList(String name){
+    public MovieList(String name) {
         head = new Genre(name);
     }
 
@@ -212,20 +208,20 @@ class MovieList extends MyLinkedList<String> implements ListInterface<String> {
         } else {
             Node<String> prev = head;
             Node<String> curr = head.getNext();
-            while (curr.getNext()!=null){
-                if(curr.getItem().compareTo(item) == 0){
+            while (curr.getNext() != null) {
+                if (curr.getItem().compareTo(item) == 0) {
                     curr = null;
                     break;
-                } else if(curr.getItem().compareTo(item) > 0) {
+                } else if (curr.getItem().compareTo(item) > 0) {
                     curr = prev;
                     break;
-                } else if(curr.getItem().compareTo(item) < 0 && curr.getNext().getItem().compareTo(item) > 0){
+                } else if (curr.getItem().compareTo(item) < 0 && curr.getNext().getItem().compareTo(item) > 0) {
                     break;
                 }
                 prev = curr;
                 curr = curr.getNext();
             }
-            if(curr==null){
+            if (curr == null) {
                 return;
             } else {
                 curr.insertNext(item);
