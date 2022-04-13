@@ -25,7 +25,7 @@ public class MovieDB {
             MovieList movieList = new MovieList(item.getGenre());
             movieList.add(item.getTitle());
             movieDB.add(movieList);
-            //System.out.println("insert finish");
+            //System.out.println(movieList.size());
         } else {
             // head는 비어있음
             Node<MovieList> currMovieList = movieDB.head.getNext();
@@ -45,6 +45,7 @@ public class MovieDB {
                     }
                     // -> 없으면 작품 추가
                     currMovieList.getItem().add(item.getTitle());
+                    //System.out.println(currMovieList.getItem().size());
                     return;
                 }
                 currMovieList = currMovieList.getNext();
@@ -69,12 +70,27 @@ public class MovieDB {
             System.out.println(true);
             // return
         } else {
-            // db에 해당 장르가 있는지 확인
-            // -> 있으면
-            // 해당 작품이 있는지 확인
-            // -> 있으면 iterator 이용해 삭제
+            Node<MovieList> currMovieList = movieDB.head.getNext();
+            //System.out.println(currMovieList.getItem().head.getItem()); // genre
+            while (currMovieList != null) {
+                String genre = currMovieList.getItem().head.getItem();
+                // db에 해당 장르가 있는지 확인
+                if (genre.equals(item.getGenre())) { // -> 장르가 있으면
+                    Iterator<String> iter = currMovieList.getItem().iterator();
+                    //Node<String> currMovie = currMovieList.getItem().head.getNext();
+                    while (iter.hasNext()){
+                        if(item.getTitle().equals(iter.next())){
+                            iter.remove();
+                            return;
+                        }
+                    }
+                    // -> 없으면 return
+                    return;
+                }
+                currMovieList = currMovieList.getNext();
+            }
             // -> 없으면 return
-            // -> 없으면 return
+            return;
         }
 
         // Printing functionality is provided for the sake of debugging.
