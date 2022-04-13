@@ -25,7 +25,6 @@ public class MovieDB {
             MovieList movieList = new MovieList(item.getGenre());
             movieList.add(item.getTitle());
             movieDB.add(movieList);
-            //System.out.println(movieList.size());
         } else {
             // head는 비어있음
             Node<MovieList> currMovieList = movieDB.head.getNext();
@@ -64,23 +63,29 @@ public class MovieDB {
     public void delete(MovieDBItem item) {
         // FIXME implement this
         // Remove the given item from the MovieDB.
-
+        //System.out.println(movieDB.size());
         // use iterator
         if (movieDB.isEmpty()) {
-            System.out.println(true);
-            // return
         } else {
             Node<MovieList> currMovieList = movieDB.head.getNext();
-            //System.out.println(currMovieList.getItem().head.getItem()); // genre
             while (currMovieList != null) {
                 String genre = currMovieList.getItem().head.getItem();
                 // db에 해당 장르가 있는지 확인
                 if (genre.equals(item.getGenre())) { // -> 장르가 있으면
                     Iterator<String> iter = currMovieList.getItem().iterator();
-                    //Node<String> currMovie = currMovieList.getItem().head.getNext();
                     while (iter.hasNext()){
                         if(item.getTitle().equals(iter.next())){
                             iter.remove();
+                            //System.out.println(currMovieList.getItem().size());
+                            if(currMovieList.getItem().size()==0){
+                                Iterator<MovieList> dbIter = movieDB.iterator();
+                                while(dbIter.hasNext()){
+                                    if(genre.equals(dbIter.next().head.getItem())){
+                                        dbIter.remove();
+                                        //System.out.println(movieDB.size());
+                                    }
+                                }
+                            }
                             return;
                         }
                     }
@@ -95,7 +100,7 @@ public class MovieDB {
 
         // Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
-        System.err.printf("[trace] MovieDB: DELETE [%s] [%s]\n", item.getGenre(), item.getTitle());
+        //System.err.printf("[trace] MovieDB: DELETE [%s] [%s]\n", item.getGenre(), item.getTitle());
     }
 
     public MyLinkedList<MovieDBItem> search(String term) {
@@ -113,7 +118,7 @@ public class MovieDB {
 
         // FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
         // This code is supplied for avoiding compilation error.
-        MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
+        MyLinkedList<MovieDBItem> results = new MyLinkedList<>();
 
         if (!movieDB.isEmpty()) {
             Node<MovieList> currMovieList = movieDB.head.getNext();
@@ -150,10 +155,8 @@ public class MovieDB {
         // This code is supplied for avoiding compilation error.
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
 
-        if (!movieDB.isEmpty()) { // 이건 그냥 쭉 순회하며 list에 추가
-            // head는 비어있음
+        if (!movieDB.isEmpty()) {
             Node<MovieList> currMovieList = movieDB.head.getNext();
-            //System.out.println(currMovieList.getItem().head.getItem()); // genre
             while (currMovieList != null) {
                 String genre = currMovieList.getItem().head.getItem();
                 Node<String> currMovie = currMovieList.getItem().head.getNext();
