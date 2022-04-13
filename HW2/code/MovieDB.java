@@ -7,13 +7,13 @@ import java.util.Iterator;
  * 유지하는 데이터베이스이다.
  */
 public class MovieDB {
-    static MyLinkedList<MovieList> movieDB;
+    static MovieDBList movieDB;
 
     public MovieDB() {
         // FIXME implement this
         // HINT: MovieDBGenre 클래스를 정렬된 상태로 유지하기 위한
         // MyLinkedList 타입의 멤버 변수를 초기화 한다.
-        movieDB = new MyLinkedList<>();
+        movieDB = new MovieDBList();
     }
 
     public void insert(MovieDBItem item) {
@@ -193,6 +193,47 @@ class Genre extends Node<String> implements Comparable<Genre> {
     public boolean equals(Object obj) {
         return super.equals(obj);
         //throw new UnsupportedOperationException("not implemented yet");
+    }
+}
+
+class MovieDBList extends MyLinkedList<MovieList> implements ListInterface<MovieList>{
+    @Override
+    public void add(MovieList item){
+        if (isEmpty()) {
+            super.add(item);
+        } else if (size() == 1) {
+            if (first().head.getItem().compareTo(item.head.getItem()) == 0) {
+                return;
+            }
+            if (first().head.getItem().compareTo(item.head.getItem()) > 0) {
+                head.insertNext(item);
+            } else {
+                head.getNext().insertNext(item);
+            }
+            numItems += 1;
+        } else {
+            Node<MovieList> prev = head;
+            Node<MovieList> curr = head.getNext();
+            while (curr.getNext() != null) {
+                if (curr.getItem().head.getItem().compareTo(item.head.getItem()) == 0) {
+                    curr = null;
+                    break;
+                } else if (curr.getItem().head.getItem().compareTo(item.head.getItem()) > 0) {
+                    curr = prev;
+                    break;
+                } else if (curr.getItem().head.getItem().compareTo(item.head.getItem()) < 0 && curr.getNext().getItem().head.getItem().compareTo(item.head.getItem()) > 0) {
+                    break;
+                }
+                prev = curr;
+                curr = curr.getNext();
+            }
+            if (curr == null) {
+                return;
+            } else {
+                curr.insertNext(item);
+            }
+            numItems += 1;
+        }
     }
 }
 
