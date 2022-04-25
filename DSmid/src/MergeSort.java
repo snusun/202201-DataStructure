@@ -35,4 +35,39 @@ public class MergeSort {
             D[t++] = C[j++];
         }
     }
+
+    public int originMergesort(int p, int r, int[] A, int cnt){
+        cnt++;
+        System.out.println(cnt);
+        if(p<r){
+            int q = (p+r)/2;
+            originMergesort(p, q, A, cnt);
+            originMergesort(q+1, r, A, cnt);
+            merge(A, p, q, r);
+        }
+        cnt--;
+        return cnt;
+    }
+
+    private void merge(int[] A, int p, int q, int r){
+        int i=p; int j=q+1; int t=0;
+        int[] temp = new int[A.length];
+        while(i<=q && j<=r){
+            if(A[i] <= A[j]){
+                temp[t++] = A[i++];
+            } else {
+                temp[t++] = A[j++];
+            }
+        }
+        while(i<=q) { // 왼쪽 부분 배열이 남은 경우
+            temp[t++] = A[i++];
+        }
+        while(j<=r) { // 오른쪽 부분 배열이 남은 경우
+            temp[t++] = A[j++];
+        }
+        i = p; t = 0;
+        while(i<=r){
+            A[i++] = temp[t++];
+        }
+    }
 }
