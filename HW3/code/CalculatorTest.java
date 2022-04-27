@@ -76,7 +76,7 @@ public class CalculatorTest
 		String postfix = "";
 
 		for(String oper: infix){
-			System.out.println(oper);
+			//System.out.println(oper);
 			if(!isOperator(oper) && !isParenthesis(oper)){
 				postfix += " " + oper;
 			} else if(isOperator(oper)) {
@@ -113,7 +113,26 @@ public class CalculatorTest
 	}
 
 	private static long operate(String postfix){
-		return 0;
+		String[] operation = postfix.split(" ");
+		Stack<Long> stack = new Stack<Long>();
+		for(int i=0; i<operation.length; i++){
+			String ch = operation[i];
+			if(isOperator(ch)){
+				if(ch.equals("~")) {
+					long n1 = stack.pop();
+					stack.push(n1*(-1));
+				} else {
+					long n2 = stack.pop();
+					long n1 = stack.pop();
+					long result = calculateByOperator(ch, n1, n2);
+					stack.push(result);
+				}
+			} else { // 숫자여야 함
+				stack.push(Long.parseLong(ch));
+			}
+		}
+
+		return stack.pop(); // 오류가 안난다면 하나만 남음
 	}
 
 	private static boolean isOperator(String oper)
@@ -140,6 +159,18 @@ public class CalculatorTest
 
 	private static boolean isLeft(String oper){
 		return !oper.equals("^") && !oper.equals("~");
+	}
+
+	private static long calculateByOperator(String oper, long n1, long n2){
+		return switch (oper) {
+			case "^" -> (long) Math.pow(n1, n2);
+			case "*" -> n1 * n2;
+			case "/" -> n1 / n2;
+			case "%" -> n1 % n2;
+			case "+" -> n1 + n2;
+			case "-" -> n1 - n2;
+			default -> -1;
+		};
 	}
 
 }
