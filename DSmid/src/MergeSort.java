@@ -36,17 +36,17 @@ public class MergeSort {
         }
     }
 
-    public int originMergesort(int p, int r, int[] A, int cnt){
-        cnt++;
-        System.out.println(cnt);
+    public void originMergesort(int p, int r, int[] A/*, int cnt*/){
+        //cnt++;
+        //System.out.println(cnt);
         if(p<r){
             int q = (p+r)/2;
-            originMergesort(p, q, A, cnt);
-            originMergesort(q+1, r, A, cnt);
+            originMergesort(p, q, A);
+            originMergesort(q+1, r, A);
             merge(A, p, q, r);
         }
-        cnt--;
-        return cnt;
+        //cnt--;
+        //return cnt;
     }
 
     private void merge(int[] A, int p, int q, int r){

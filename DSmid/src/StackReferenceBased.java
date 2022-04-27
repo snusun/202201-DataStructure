@@ -52,17 +52,18 @@ class Node{
         item = newItem;
         next = null;
     }
-    /*
+
     public Node(Object newItem, Node nextNode){
         item = newItem;
         next = nextNode;
-    }*/
+    }
 
     // add
+    /*
     public Node(Object newItem, Node prevNode){
         item = newItem;
         prev = prevNode;
-    }
+    }*/
 
     public Object getItem(){
         return item;

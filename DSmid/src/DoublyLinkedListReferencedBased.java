@@ -1,66 +1,67 @@
-public class DoublyLinkedListReferencedBased {
-    private DNode headNode;
-    private int numItems;
-    public DoublyLinkedListReferencedBased(){
-        numItems = 0;
-        // dummy head 생성
-        headNode = new DNode(null);
-        headNode.setNext(headNode);
-        headNode.setPrev(headNode);
-    }
-    public void add(int item){
-        DNode curr = headNode.getNext();
-        if(curr.getItem()==null){
-            DNode newNode= new DNode(item, headNode, headNode);
-            return;
-        }
-        while(curr.getNext()!=null){
-            if((int)curr.getItem()>(int)item){
-                DNode newNode = new DNode(item, curr.getPrev(), curr);
-                curr.setPrev(newNode);
-                curr.getPrev().setNext(newNode);
-                numItems++;
-            }
-            curr=curr.getNext();
-        }
-        DNode newNode= new DNode(item, curr, null);
-        curr.setNext(newNode);
-    }
-    public void print(){
-        DNode curr = headNode.getNext();
-        while (curr!=null){
-            System.out.println(curr.getItem());
-            curr = curr.getNext();
-        }
-    }
-}
-
+//public class DoublyLinkedListReferencedBased {
+//    private DNode headNode;
+//    private int numItems;
+//    public DoublyLinkedListReferencedBased(){
+//        numItems = 0;
+//        // dummy head 생성
+//        headNode = new DNode(-1);
+//        headNode.setNext(headNode);
+//        headNode.setPrev(headNode);
+//    }
+//
+//    public void add(int item){
+//        DNode prevNode = headNode;
+//        System.out.println(item);
+//        int cnt=0;
+//        while (item > (int) prevNode.getItem() && cnt<=numItems) {
+//            System.out.println(item + " " + (int) prevNode.getItem());
+//            prevNode = prevNode.getNext();
+//            cnt++;
+//        }
+//        prevNode = prevNode.getNext();
+//        DNode newNode = new DNode(item, prevNode, prevNode.getNext());
+//        newNode.getNext().setPrev(newNode);
+//        prevNode.setNext(newNode);
+//        numItems++;
+//
+//        //DNode newNode = new DNode(item);
+//
+//    }
+//    public void print(){
+//        DNode curr = headNode.getNext();
+//        for(int i=0; i<numItems; i++){
+//            System.out.println(curr.getItem());
+//            curr = curr.getNext();
+//        }
+//    }
+//}
+//
 class DNode {
-    private Object item;
-    private DNode prev;
-    private DNode next;
-    public DNode(Object newItem){
+    public Integer item;
+    public DNode prev;
+    public DNode next;
+    public DNode(Integer newItem){
         item = newItem;
         prev = next = null;
     }
-    public DNode(Object newItem, DNode prevNode, DNode nextNode){
+    public DNode(Integer newItem, DNode prevNode, DNode nextNode){
         item = newItem;
         prev = prevNode;
         next = nextNode;
     }
-    public Object getItem(){
-        return item;
-    }
-    public DNode getNext(){
-        return next;
-    }
-    public DNode getPrev(){
-        return prev;
-    }
-    public void setNext(DNode next){
-        this.next = next;
-    }
-    public void setPrev(DNode prev){
-        this.prev = prev;
-    }
+//    public Object getItem(){
+//        return item;
+//    }
+//    public DNode getNext(){
+//        return next;
+//    }
+//    public DNode getPrev(){
+//        return prev;
+//    }
+//    public void setNext(DNode next){
+//        this.next = next;
+//    }
+//    public void setPrev(DNode prev){
+//        this.prev = prev;
+//    }
 }
