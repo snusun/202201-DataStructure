@@ -5,6 +5,8 @@ import java.util.StringTokenizer;
 
 public class CalculatorTest
 {
+	static String resultPostfix = "";
+	static long result = 0;
 	public static void main(String args[])
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,9 +22,12 @@ public class CalculatorTest
 			}
 			catch (Exception e)
 			{
-				System.out.println("ERROR");
+				resultPostfix = "ERROR";
+				//System.out.println("ERROR");
 				//System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
 			}
+			System.out.println(resultPostfix);
+			if(!resultPostfix.equals("ERROR")) System.out.println(result);
 		}
 	}
 
@@ -38,10 +43,12 @@ public class CalculatorTest
 
 		// make postfix from infix array
 		String postfix = infixToPostfix(infix);
-		System.out.println(postfix);
+		resultPostfix = postfix;
+		//System.out.println(postfix);
 
 		// operate using postfix array
-		System.out.println(operate(postfix));
+		result = operate(postfix);
+		//System.out.println(operate(postfix));
 	}
 
 	// make input string to string array contains operand and operator
