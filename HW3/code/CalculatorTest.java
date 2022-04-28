@@ -1,12 +1,12 @@
 import java.io.*;
-import java.util.Optional;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class CalculatorTest
 {
 	static String resultPostfix = "";
-	static long result = 0;
+	static Long result = null;
+
 	public static void main(String args[])
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -23,23 +23,23 @@ public class CalculatorTest
 			catch (Exception e)
 			{
 				resultPostfix = "ERROR";
-				//System.out.println("ERROR");
-				//System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
 			}
-			System.out.println(resultPostfix);
-			if(!resultPostfix.equals("ERROR")) System.out.println(result);
+			if(result==null || resultPostfix.equals("ERROR")) {
+				System.out.println("ERROR");
+			} else {
+				System.out.println(resultPostfix);
+				System.out.println(result);
+			}
 		}
 	}
 
-	private static void command(String input)
-	{
+	private static void command(String input){
 		// split input
 		String[] infix = splitInfix(input);
-
-//		for(String s : infix){
-//			System.out.print(s + " ");
-//		}
-//		System.out.println();
+		if(infix[0].equals("ERROR")) {
+			resultPostfix = "ERROR";
+			return;
+		}
 
 		// make postfix from infix array
 		String postfix = infixToPostfix(infix);
@@ -48,11 +48,16 @@ public class CalculatorTest
 
 		// operate using postfix array
 		result = operate(postfix);
-		//System.out.println(operate(postfix));
 	}
 
 	// make input string to string array contains operand and operator
 	private static String[] splitInfix(String input){
+		String[] checkInfix = input.split("[+\\-*/%^()]|(\\s+)");
+		int numOfOperand = 0;
+		for(String s : checkInfix){
+			if(!s.equals("")) numOfOperand++;
+		}
+
 		// remove blank
 		String removeBlank = input.replaceAll("\\s+","");
 
@@ -65,11 +70,21 @@ public class CalculatorTest
 			i++;
 		}
 
+		for(String s: infix){
+			if(!isOperator(s) && !isParenthesis(s)){
+				numOfOperand--;
+			}
+		}
+		
+		if(numOfOperand!=0){
+			return new String[]{"ERROR"};
+		}
+
 		// change unary '-' to '~'
 		for(int j=0; j<infix.length-1; j++){
 			if(infix[j].equals("-")){
 				if(j==0 || isOperator(infix[j-1]) || infix[j-1].equals("(")) {
-					infix[j] = "~"; // 2번째 경우 ~가 있으면 안되긴 함 -> 나중에 수정
+					infix[j] = "~";
 				}
 			}
 		}
@@ -84,14 +99,11 @@ public class CalculatorTest
 		String postfix = "";
 
 		for(String oper: infix){
-			//System.out.println(oper);
 			if(!isOperator(oper) && !isParenthesis(oper)){
 				postfix += " " + oper;
 			} else if(isOperator(oper)) {
-				//System.out.println("isOperator");
 				while (true){
 					if(operatorStack.isEmpty() || operatorStack.peek().equals("(")) {
-						//operatorStack.push(oper);
 						break;
 					}
 					String peekOperator = operatorStack.peek();
@@ -100,10 +112,6 @@ public class CalculatorTest
 					} else if(isLeft(oper) && priority(oper) <= priority(peekOperator)){
 						postfix += " " + operatorStack.pop();
 					}
-//					if((priority(oper) <= priority(peekOperator) ||
-//									(priority(oper)==priority(peekOperator) && !isLeft(peekOperator)))){
-//						postfix += " " + operatorStack.pop();
-//					}
 					else break;
 				}
 				operatorStack.push(oper);
@@ -124,9 +132,9 @@ public class CalculatorTest
 		return postfix.trim();
 	}
 
-	private static long operate(String postfix){
+	private static Long operate(String postfix){
 		String[] operation = postfix.split(" ");
-		Stack<Long> stack = new Stack<Long>();
+		Stack<Long> stack = new Stack<>();
 		for(int i=0; i<operation.length; i++){
 			String ch = operation[i];
 			if(isOperator(ch)){
@@ -136,15 +144,15 @@ public class CalculatorTest
 				} else {
 					long n2 = stack.pop();
 					long n1 = stack.pop();
-					long result = calculateByOperator(ch, n1, n2);
-					stack.push(result);
+					if(calculateByOperator(ch, n1, n2)==null) return null;
+					stack.push(calculateByOperator(ch, n1, n2));
 				}
-			} else { // 숫자여야 함
+			} else {
 				stack.push(Long.parseLong(ch));
 			}
 		}
 
-		return stack.pop(); // 오류가 안난다면 하나만 남음
+		return stack.pop();
 	}
 
 	private static boolean isOperator(String oper)
@@ -171,23 +179,25 @@ public class CalculatorTest
 		return !oper.equals("^") && !oper.equals("~");
 	}
 
-	private static long calculateByOperator(String oper, long n1, long n2){
+	private static Long calculateByOperator(String oper, long n1, long n2){
 		switch (oper) {
-			case "^":
+			case "^": // n1 == 0 && n2 < 0
+				if(n1==0 && n2<0) return null;
 				return (long) Math.pow(n1, n2);
 			case "*":
 				return n1 * n2;
-			case "/":
+			case "/": // n2 == 0;
+				if(n2==0) return null;
 				return n1 / n2;
-			case "%":
+			case "%": // n2 == 0;
+				if(n2==0) return null;
 				return n1 % n2;
 			case "+":
 				return n1 + n2;
 			case "-":
 				return n1 - n2;
 			default:
-				return -1;
+				return null;
 		}
 	}
-
 }
