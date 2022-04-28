@@ -20,7 +20,8 @@ public class CalculatorTest
 			}
 			catch (Exception e)
 			{
-				System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
+				System.out.println("ERROR");
+				//System.out.println("입력이 잘못되었습니다. 오류 : " + e.toString());
 			}
 		}
 	}
@@ -45,7 +46,6 @@ public class CalculatorTest
 
 	// make input string to string array contains operand and operator
 	private static String[] splitInfix(String input){
-
 		// remove blank
 		String removeBlank = input.replaceAll("\\s+","");
 
@@ -67,6 +67,7 @@ public class CalculatorTest
 			}
 		}
 
+
 		return infix;
 	}
 
@@ -87,11 +88,15 @@ public class CalculatorTest
 						break;
 					}
 					String peekOperator = operatorStack.peek();
-					if(/*!peekOperator.equals("(") &&*/
-							(priority(oper) <= priority(peekOperator) ||
-									(priority(oper)==priority(peekOperator) && !isLeft(peekOperator)))){
+					if(!isLeft(oper) && (priority(oper) < priority(peekOperator))){
+						postfix += " " + operatorStack.pop();
+					} else if(isLeft(oper) && priority(oper) <= priority(peekOperator)){
 						postfix += " " + operatorStack.pop();
 					}
+//					if((priority(oper) <= priority(peekOperator) ||
+//									(priority(oper)==priority(peekOperator) && !isLeft(peekOperator)))){
+//						postfix += " " + operatorStack.pop();
+//					}
 					else break;
 				}
 				operatorStack.push(oper);
@@ -147,14 +152,12 @@ public class CalculatorTest
 	}
 
 	private static int priority(String oper){
-		return switch (oper) {
-			case "(", ")" -> 5;
-			case "^" -> 4;
-			case "~" -> 3;
-			case "*", "/", "%" -> 2;
-			case "+", "-" -> 1;
-			default -> -1;
-		};
+		if(oper.equals("(") || oper.equals(")")) return 5;
+		else if(oper.equals("^")) return 4;
+		else if(oper.equals("~")) return 3;
+		else if(oper.equals("*") || oper.equals("/") || oper.equals("%")) return 2;
+		else if (oper.equals("+") || oper.equals("-")) return 1;
+		else return -1;
 	}
 
 	private static boolean isLeft(String oper){
@@ -162,15 +165,22 @@ public class CalculatorTest
 	}
 
 	private static long calculateByOperator(String oper, long n1, long n2){
-		return switch (oper) {
-			case "^" -> (long) Math.pow(n1, n2);
-			case "*" -> n1 * n2;
-			case "/" -> n1 / n2;
-			case "%" -> n1 % n2;
-			case "+" -> n1 + n2;
-			case "-" -> n1 - n2;
-			default -> -1;
-		};
+		switch (oper) {
+			case "^":
+				return (long) Math.pow(n1, n2);
+			case "*":
+				return n1 * n2;
+			case "/":
+				return n1 / n2;
+			case "%":
+				return n1 % n2;
+			case "+":
+				return n1 + n2;
+			case "-":
+				return n1 - n2;
+			default:
+				return -1;
+		}
 	}
 
 }
