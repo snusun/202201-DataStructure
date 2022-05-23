@@ -1,9 +1,11 @@
 import java.io.*;
 import java.util.LinkedList;
+import java.util.Hashtable;
 
 public class Matching
 {
 	static String[]	fileData;
+	static Hashtable hashtable;
 
 	public static void main(String args[])
 	{
@@ -33,6 +35,7 @@ public class Matching
 		String[] inputInfo = input.split(" ");
 		if(inputInfo[0].equals("<")) {
 			fileData = readFile(inputInfo[1]);
+			hashtable = makeHashTable(fileData);
 		} else if(inputInfo[0].equals("@")) {
 			int indexNumber = Integer.parseInt(inputInfo[1]);
 			String[] slotResult = findSlot(indexNumber);
@@ -65,7 +68,27 @@ public class Matching
 			result[i] = strList.get(i);
 		}
 
+		//fileData = result;
 		return result;
+	}
+
+	private static Hashtable makeHashTable(String[] data){
+		Hashtable<Integer, String> hashtable = new Hashtable<>(); // string -> avl tree로 교체
+
+		for(String str: data){
+			for(int i=0; i<str.length()-5; i++){
+				String subString = str.substring(i, i+6);
+				char[] chars = subString.toCharArray();
+				int ascii = 0;
+				for(char c: chars){
+					ascii += c;
+				}
+				int slotNum = ascii % 100; // 아스키코드 합 mod 100
+				// 해당 key의 tree에 추가
+			}
+		}
+
+		return hashtable;
 	}
 
 	private static String[] findSlot(int index){
