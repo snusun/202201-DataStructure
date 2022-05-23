@@ -225,8 +225,7 @@ public class SortingTest {
     private static void radixSort(int[] value) {
         int[] sortArr = new int[value.length];
         int queSize, maxLen = 0;
-        int len;
-        int idx;
+        int len, idx;
 
         Map<Integer, Queue<Integer>> map = new HashMap<>();
 
@@ -252,7 +251,6 @@ public class SortingTest {
 
             idx = value.length - 1;
             for (int j = 9; j >= 0; j--) {
-
                 queSize = map.get(j).size();
                 for (int qIdx = 0; qIdx < queSize; qIdx++) {
                     sortArr[idx] = map.get(j).poll();
