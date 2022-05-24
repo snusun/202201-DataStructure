@@ -5,9 +5,9 @@ import java.util.Hashtable;
 public class Matching
 {
 	static String[]	fileData;
-	static Hashtable hashtable;
+	static Hashtable<Integer, AVLTree<String, Position>> hashtable;
 
-	public static void main(String args[])
+	public static void main(String[] args)
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -72,12 +72,14 @@ public class Matching
 		return result;
 	}
 
-	private static Hashtable makeHashTable(String[] data){
-		Hashtable<Integer, String> hashtable = new Hashtable<>(); // string -> avl tree로 교체
+	private static Hashtable<Integer, AVLTree<String, Position>> makeHashTable(String[] data){
+		Hashtable<Integer, AVLTree<String, Position>> hashtable = new Hashtable<>();
 
-		for(String str: data){
-			for(int i=0; i<str.length()-5; i++){
-				String subString = str.substring(i, i+6);
+		//for(String str: data){
+		for(int i=0; i<data.length; i++){
+			String str = data[i];
+			for(int j=0; j<str.length()-5; j++){
+				String subString = str.substring(j, j+6);
 				char[] chars = subString.toCharArray();
 				int ascii = 0;
 				for(char c: chars){
@@ -85,6 +87,7 @@ public class Matching
 				}
 				int slotNum = ascii % 100; // 아스키코드 합 mod 100
 				// 해당 key의 tree에 추가
+				hashtable.get(slotNum).insert(subString, new Position(i, j));
 			}
 		}
 
