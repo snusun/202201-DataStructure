@@ -38,8 +38,7 @@ public class Matching
 			hashtable = makeHashTable(fileData);
 		} else if(inputInfo[0].equals("@")) {
 			int indexNumber = Integer.parseInt(inputInfo[1]);
-			String[] slotResult = findSlot(indexNumber);
-			// print
+			findSlot(indexNumber);
 		} else if(inputInfo[0].equals("?")) {
 			String searchResult = searchPattern(inputInfo[1]);
 			// print
@@ -87,6 +86,9 @@ public class Matching
 				}
 				int slotNum = ascii % 100; // 아스키코드 합 mod 100
 				// 해당 key의 tree에 추가
+				if(hashtable.get(slotNum)==null){
+					hashtable.put(slotNum, new AVLTree<>());
+				}
 				hashtable.get(slotNum).insert(subString, new Position(i, j));
 			}
 		}
@@ -94,8 +96,10 @@ public class Matching
 		return hashtable;
 	}
 
-	private static String[] findSlot(int index){
-		return new String[0];
+	private static void findSlot(int index){
+		AVLTree<String, Position> avlTree = hashtable.get(index);
+		avlTree.preOrderTraversal(avlTree.getRoot());
+		//return new LinkedList<>();
 	}
 
 	private static String searchPattern(String pattern){

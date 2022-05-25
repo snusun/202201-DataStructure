@@ -1,11 +1,13 @@
-import java.util.Map;
-
 public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
     private AVLNode<K, V> root;
     static final AVLNode NIL = new AVLNode(null, null, null, null, 0);
 
     public AVLTree() {
         root = NIL;
+    }
+
+    public AVLNode<K, V> getRoot() {
+        return root;
     }
 
     public AVLNode<K, V> search(K key){
@@ -114,6 +116,16 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
         } else
             type = NO_NEED;
         return type;
+    }
+
+    void preOrderTraversal(AVLNode<K, V> node){
+        if(node!=NIL){
+            System.out.println(node.key);
+            preOrderTraversal(node.left);
+            //System.out.println(node.key);
+            preOrderTraversal(node.right);
+            //visit(node); postorder
+        }
     }
 
     public boolean isEmpty(){
