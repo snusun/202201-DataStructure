@@ -99,10 +99,10 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
         return LChild;
     }
 
-    private final int LL=1, LR=2, RR=3, RL=4, NO_NEED=0, IlLEGAL=-1;
+    private final int LL=1, LR=2, RR=3, RL=4, NO_NEED=0, ILLEGAL=-1;
 
     private int needBalance(AVLNode<K, V> t){
-        int type = IlLEGAL;
+        int type = ILLEGAL;
         if(t.left.height + 2 <= t.right.height){
             if((t.right.left.height) <= t.right.right.height)
                 type = RR;

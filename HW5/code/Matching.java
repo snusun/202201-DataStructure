@@ -84,12 +84,12 @@ public class Matching
 				for(char c: chars){
 					ascii += c;
 				}
-				int slotNum = ascii % 100; // 아스키코드 합 mod 100
+				int slotNum = ascii % 100;
 				// 해당 key의 tree에 추가
 				if(hashtable.get(slotNum)==null){
 					hashtable.put(slotNum, new AVLTree<>());
 				}
-				hashtable.get(slotNum).insert(subString, new Position(i, j));
+				hashtable.get(slotNum).insert(subString, new Position(i+1, j+1));
 			}
 		}
 
@@ -103,6 +103,10 @@ public class Matching
 	}
 
 	private static String searchPattern(String pattern){
+		// pattern 6글자씩 끊어서 검색
+		// 맨 처음 위치 검색 한 다음 위치 저장(여러개일 수 있으니 for loop)
+		// 각 위치마자 pattern 쪼갠 것 위치 찾아가며 이어지면 위치 list에 저장
+		// 마지막 부분이 6으로 떨어지지 않으면 뒤에서 부터 6글자 해서 검색 후 index 계산하기
 		return "";
 	}
 }
