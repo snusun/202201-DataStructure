@@ -40,7 +40,8 @@ public class Matching
 			int indexNumber = Integer.parseInt(inputInfo[1]);
 			findSlot(indexNumber);
 		} else if(inputInfo[0].equals("?")) {
-			String searchResult = searchPattern(inputInfo[1]);
+			String pattern = input.substring(2);
+			String searchResult = searchPattern(pattern);
 			// print
 		}
 	}
@@ -97,8 +98,11 @@ public class Matching
 	}
 
 	private static void findSlot(int index){
-		AVLTree<String, Position> avlTree = hashtable.get(index);
-		avlTree.preOrderTraversal(avlTree.getRoot());
+		if(hashtable.get(index)==null) System.out.println("EMPTY");
+		else {
+			AVLTree<String, Position> avlTree = hashtable.get(index);
+			avlTree.preOrderTraversal(avlTree.getRoot());
+		}
 		//return new LinkedList<>();
 	}
 
@@ -107,6 +111,22 @@ public class Matching
 		// 맨 처음 위치 검색 한 다음 위치 저장(여러개일 수 있으니 for loop)
 		// 각 위치마자 pattern 쪼갠 것 위치 찾아가며 이어지면 위치 list에 저장
 		// 마지막 부분이 6으로 떨어지지 않으면 뒤에서 부터 6글자 해서 검색 후 index 계산하기
+		char[] chars = pattern.toCharArray();
+		int ascii = 0;
+		for(char c: chars){
+			System.out.println(c + " " + (int)c);
+			ascii += c;
+		}
+		int slotNum = ascii % 100;
+		System.out.println(slotNum);
+
+		AVLTree<String, Position> avlTree = hashtable.get(slotNum);
+		AVLNode<String, Position> avlNode = avlTree.search(pattern);
+		System.out.println(avlNode.key);
+		for(Position position: avlNode.item){
+			System.out.println(position);
+		}
+
 		return "";
 	}
 }

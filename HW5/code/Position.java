@@ -13,4 +13,9 @@ public class Position implements Comparable<Position> {
             return this.j - o.j;
         } return this.i - o.i;
     }
+
+    @Override
+    public String toString(){
+        return "(" + i + ", " + j + ")";
+    }
 }
