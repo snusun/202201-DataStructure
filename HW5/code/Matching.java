@@ -75,7 +75,14 @@ public class Matching {
                 if (hashtable.get(slotNum) == null) {
                     hashtable.put(slotNum, new AVLTree<>());
                 }
+
+                    System.out.println("subString");
+					System.out.println(subString);
+                    System.out.println("-----");
+
+
                 hashtable.get(slotNum).insert(subString, new Position(i + 1, j + 1));
+                //hashtable.get(slotNum).BFS();
             }
         }
 
@@ -87,6 +94,7 @@ public class Matching {
         else {
             AVLTree<String, Position> avlTree = hashtable.get(index);
             avlTree.preOrderTraversal(avlTree.getRoot());
+			//System.out.println(avlTree.preOrderAsString());
         }
     }
 

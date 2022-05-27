@@ -11,6 +11,7 @@ public class AVLNode<K extends Comparable<K>, V extends Comparable<V>> {
         this.item = new LinkedList<>();
         this.left = AVLTree.NIL;
         this.right = AVLTree.NIL;
+        this.height = 1;
     }
 
     public AVLNode(K key, LinkedList<V> item, AVLNode<K, V> leftChild, AVLNode<K, V> rightChild){
