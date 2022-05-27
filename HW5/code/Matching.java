@@ -124,9 +124,8 @@ public class Matching {
 							continue;
 						}
 						for (Position nextPosition : newPositions) {
-							if (start.j + index == nextPosition.j) {
+							if (start.i == nextPosition.i && start.j + index == nextPosition.j) {
 								if(!concatPosition.contains(start)) {
-									concatPosition.add(start);
 									concatPosition.add(start);
 								}
 							}
@@ -142,7 +141,7 @@ public class Matching {
 
                         boolean isExist = false;
                         for (Position nextPosition : newPositions) {
-                            if (start.j + i == nextPosition.j) {
+                            if (start.i==nextPosition.i && start.j + i == nextPosition.j) {
                                 isExist = true;
                                 break;
                             }
