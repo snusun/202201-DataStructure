@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
     private AVLNode<K, V> root;
     static final AVLNode NIL = new AVLNode(null, null, null, null, 0);
@@ -38,7 +35,6 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
             tNode.left = insertItem(tNode.left, key, value);
             tNode.height = 1 + Math.max(tNode.right.height, tNode.left.height);
             int type = needBalance(tNode);
-            System.out.println("<0 insertItem: " + type);
             if (type != NO_NEED) {
                 tNode = balanceAVL(tNode, type);
             }
@@ -46,7 +42,6 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
             tNode.right = insertItem(tNode.right, key, value);
             tNode.height = 1 + Math.max(tNode.right.height, tNode.left.height);
             int type = needBalance(tNode);
-            System.out.println(">0 insertItem: " + type);
             if (type != NO_NEED) {
                 tNode = balanceAVL(tNode, type);
             }
@@ -56,7 +51,6 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
 
 
     private AVLNode<K, V> balanceAVL(AVLNode<K, V> tNode, int type) {
-        System.out.println("type: " + type);
         AVLNode<K, V> returnNode = NIL;
         switch (type) {
             case LL:
@@ -81,7 +75,6 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
     }
 
     private AVLNode<K, V> leftRotate(AVLNode<K, V> t) {
-        System.out.println("left Rotate");
         AVLNode<K, V> RChild = t.right;
         if (RChild == NIL) {
             System.out.println(t.key + "'s RChild shouldn't be NIL!");
@@ -96,7 +89,6 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
     }
 
     private AVLNode<K, V> rightRotate(AVLNode<K, V> t) {
-        System.out.println("right Rotate");
         AVLNode<K, V> LChild = t.left;
         if (LChild == NIL) {
             System.out.println(t.key + "'s LChild shouldn't be NIL!");
@@ -114,45 +106,24 @@ public class AVLTree<K extends Comparable<K>, V extends Comparable<V>> {
 
     private int needBalance(AVLNode<K, V> t) {
         int type = ILLEGAL;
-        System.out.println("left height " + t.left.height + " right height " + t.right.height);
 
         if (t.left.height + 2 <= t.right.height) {
-            System.out.println(t.right.left.height + " " + t.right.right.height);
             if ((t.right.left.height) <= t.right.right.height) type = RR;
             else type = RL;
         } else if ((t.left.height) >= t.right.height + 2) {
-            System.out.println(t.left.left.height + " " + t.left.right.height);
             if ((t.left.left.height) >= t.left.right.height) type = LL;
             else type = LR;
         } else type = NO_NEED;
         return type;
     }
 
-    void preOrderTraversal(AVLNode<K, V> node) {
-        if (node != NIL) {
-            System.out.println(node.key);
-            preOrderTraversal(node.left);
-            //System.out.println(node.key);
-            preOrderTraversal(node.right);
-            //visit(node); postorder
-        }
-    }
+    public StringBuilder preOrderTraversal(AVLNode<K, V> node, StringBuilder sb) {
+        if (node == NIL) return sb;
 
-    public void BFS() {
-        Queue<AVLNode<K, V>> queue = new LinkedList<>();
-        queue.add(root);
-
-        while (!queue.isEmpty()) {
-            AVLNode<K, V> node = queue.poll();
-            System.out.println(node.key);
-            if (node.left != NIL) {
-                queue.add(node.left);
-            }
-            if (node.right != NIL) {
-                queue.add(node.right);
-            }
-        }
-
+        sb.append(node.key).append(" ");
+        preOrderTraversal(node.left, sb);
+        preOrderTraversal(node.right, sb);
+        return sb;
     }
 
     public boolean isEmpty() {
