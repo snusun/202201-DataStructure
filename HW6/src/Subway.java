@@ -31,23 +31,28 @@ public class Subway {
 
             String str;
             while ((str = reader.readLine()) != null) {
-                System.out.println(str);
+                // make graph
+
+                // 역 정보 input
+                // list에 station 저장, 정렬
+                // TODO: 환승역은 어떻게 체크?
+
+                if(str.equals("")){
+                    System.out.println("find 공백 ");
+                }
+
+                // 경로 정보 input
+                // 출발역은 key에 저장, 도착역은 List에 추가 <- list가 비어있을 때 생성 후 추가
+
+                //System.out.println(str);
             }
             reader.close();
         } catch (Exception e) {
             System.out.println("File not found");
         }
-
-        // input 받아 그래프 생성 -> map
-        // 환승역은 edge 0으로 해서 연결
-        // vertex : 고유번호, 역이름, line
-        // edge
-
-        // make graph
     }
 
     private static void findShortestPath(String input) {
-
-        // find shortest path
+        // find shortest path 다익스트라
     }
 }
