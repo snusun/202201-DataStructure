@@ -3,11 +3,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 public class Subway {
     //static ArrayList<ArrayList<Station>> subwayGraph;
     static Map<String, ArrayList<String>> stationMap = new HashMap<>();
     static Map<String, ArrayList<Cost>> subwayGraph = new HashMap<>();
+    static Map<String, Long> costMap = new HashMap<>();
 
     public static void main(String[] args) {
         makeGraph(args[0]);
@@ -55,6 +57,9 @@ public class Subway {
                     } else {
                         stationMap.get(name).add(num);
                     }
+
+                    // TODO: dis를 max value로 초기화?
+                    costMap.put(num, Long.MAX_VALUE);
                 } else { // 경로 정보 input
                     // 출발역은 key에 저장, 도착역은 List에 추가 <- list가 비어있을 때 생성 후 추가 (역번호)
                     String[] routeInfo = str.split(" ");
@@ -79,7 +84,7 @@ public class Subway {
             //System.out.println("File not found");
         }
 
-        // TODO: 환승역끼리도 경로 생성, cost 0
+        // 환승역끼리도 경로 생성, cost 0
         for (String key : stationMap.keySet()) {
             ArrayList<String> stationList = stationMap.get(key);
             int size = stationList.size();
@@ -99,16 +104,48 @@ public class Subway {
             }
         }
 
-        for (String key : subwayGraph.keySet()) {
-            for (Cost num : subwayGraph.get(key)) {
-                System.out.print(num + " ");
-            }
-            System.out.println();
-        }
+//        for (String key : subwayGraph.keySet()) {
+//            for (Cost num : subwayGraph.get(key)) {
+//                System.out.print(num + " ");
+//            }
+//            System.out.println();
+//        }
     }
 
     private static void findShortestPath(String input) {
         // find shortest path 다익스트라
         // 노션 참고
+
+        String[] findPath = input.split(" ");
+        String start = findPath[0];
+        String goal = findPath[1];
+
+        String startNum = stationMap.get(start).get(0);
+        String goalNum = stationMap.get(goal).get(0);
+
+        PriorityQueue<Cost> pQ = new PriorityQueue<>();
+        pQ.offer(new Cost(startNum, 0));
+        //dis[v] = 0;
+        costMap.put(start, 0L);
+        while (!pQ.isEmpty()){
+            Cost temp = pQ.poll();
+            String now = temp.number;
+            long nowCost = temp.cost;
+            if(costMap.get(now)<nowCost) continue;
+            //if(dis[now]<nowCost) continue;
+            for(Cost ob: subwayGraph.get(now)){
+                if(costMap.get(ob.number)>ob.cost+nowCost){
+                    costMap.put(ob.number, (ob.cost + nowCost));
+                    pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
+                }
+            }
+//            for(Cost ob: graph.get(now)){
+//                if(dis[ob.vex]>ob.cost+nowCost){
+//                    dis[ob.vex] = ob.cost + nowCost;
+//                    pQ.offer(new Cost(ob.vex, dis[ob.vex]));
+//                }
+//            }
+        }
+        System.out.println(costMap.get(goalNum));
     }
 }
