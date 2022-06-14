@@ -106,35 +106,19 @@ public class Subway {
         String start = findPath[0];
         String goal = findPath[1];
 
-        //System.out.println(start);
         String startNum = stationMap.get(start).get(0);
         String goalNum = stationMap.get(goal).get(0);
+        long total = Long.MAX_VALUE;
 
-        PriorityQueue<Cost> pQ = new PriorityQueue<>();
-        pQ.offer(new Cost(startNum, 0));
-        costMap.put(startNum, 0L);
-        while (!pQ.isEmpty()) {
-            Cost temp = pQ.poll();
-            String now = temp.number;
-            long nowCost = temp.cost;
-            if (costMap.get(now) < nowCost) continue;
-            for (Cost ob : subwayGraph.get(now)) {
-                if (costMap.get(ob.number) > ob.cost + nowCost) {
-                    costMap.put(ob.number, (ob.cost + nowCost));
-                    //System.out.println(ob.number + " " + (ob.cost + nowCost));
-                    pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
-                    trackRoute.put(ob.number, now);
-                }
-            }
-        }
-
-        long totalGoalCost = costMap.get(goalNum);
-
-        for(String gNum: stationMap.get(goal)){
-            if(totalGoalCost > costMap.get(gNum)){
+        for(String sNum :stationMap.get(start)){
+            String gNum = dijkstra(sNum, stationMap.get(goal));
+            if(total > costMap.get(goalNum)) {
+                startNum = sNum;
                 goalNum = gNum;
             }
         }
+
+        goalNum = dijkstra(startNum, stationMap.get(goal));
 
         Stack<String> stack = new Stack<>();
         String tempNum = goalNum;
@@ -174,17 +158,51 @@ public class Subway {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < route.size() - 1; i++) {
             sb.append(route.get(i)).append(" ");
-            //System.out.print(route.get(i) + " ");
         }
         sb.append(route.get(route.size()-1)).append("\n");
-        //System.out.println(route.get(route.size() - 1));
         sb.append(costMap.get(goalNum));
-        //System.out.println(goalNum);
         try{
             PrintStream out = new PrintStream(System.out, true, "UTF-8");
             System.setOut(out);
             System.out.println(sb);
         } catch (Exception e) {}
-        //System.out.println(costMap.get(goalNum));
+    }
+
+    static String dijkstra(String startNum, ArrayList<String> goals){
+        String goalNum = goals.get(0);
+
+        for (String num : stations.keySet()) {
+            costMap.put(num, Long.MAX_VALUE);
+        }
+        trackRoute = new HashMap<>();
+
+        PriorityQueue<Cost> pQ = new PriorityQueue<>();
+        pQ.offer(new Cost(startNum, 0));
+        costMap.put(startNum, 0L);
+        while (!pQ.isEmpty()) {
+            Cost temp = pQ.poll();
+            String now = temp.number;
+            long nowCost = temp.cost;
+            if (costMap.get(now) < nowCost) continue;
+            for (Cost ob : subwayGraph.get(now)) {
+                if (costMap.get(ob.number) > ob.cost + nowCost) {
+                    costMap.put(ob.number, (ob.cost + nowCost));
+                    //System.out.println(ob.number + " " + (ob.cost + nowCost));
+                    pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
+                    trackRoute.put(ob.number, now);
+                }
+            }
+        }
+
+        long totalGoalCost = costMap.get(goalNum);
+
+        for(String gNum: goals){
+            if(totalGoalCost > costMap.get(gNum)){
+                goalNum = gNum;
+            }
+        }
+
+        return goalNum;
     }
 }
+
