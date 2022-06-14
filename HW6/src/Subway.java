@@ -141,9 +141,33 @@ public class Subway {
                 break;
             }
         }
+
+        LinkedList<String> route = new LinkedList<>();
+
         while (!stack.isEmpty()) {
             String num = stack.pop();
-            System.out.print(stations.get(num) + " ");
+            //System.out.print(stations.get(num) + " ");
+            String name = stations.get(num);
+            if(route.size()==0){
+                route.add(name);
+            } else {
+                if(route.get(route.size()-1).equals(name)){
+                    route.set(route.size()-1, "["+route.get(route.size()-1)+"]");
+                } else {
+                    route.add(name);
+                }
+            }
+        }
+
+        // TODO: 확인 필요
+        route.set(0, route.get(0).replace("[", ""));
+        route.set(0, route.get(0).replace("]", ""));
+        route.set(route.size()-1, route.get(route.size()-1).replace("[", ""));
+        route.set(route.size()-1, route.get(route.size()-1).replace("]", ""));
+
+        for(String name: route){
+            // TODO: 마지막 공백 삭제
+            System.out.print(name + " ");
         }
         System.out.println();
         System.out.println(costMap.get(goalNum));
