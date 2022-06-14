@@ -98,6 +98,11 @@ public class Subway {
     }
 
     private static void findShortestPath(String input) {
+
+        for(String num: stations.keySet()){
+            costMap.put(num, Long.MAX_VALUE);
+        }
+
         String[] findPath = input.split(" ");
         String start = findPath[0];
         String goal = findPath[1];
@@ -105,8 +110,8 @@ public class Subway {
         String startNum = stationMap.get(start).get(0);
         String goalNum = stationMap.get(goal).get(0);
 
-        System.out.println(start + " " + startNum);
-        System.out.println(goal + " " + goalNum);
+        //System.out.println(start + " " + startNum);
+        //System.out.println(goal + " " + goalNum);
 
         PriorityQueue<Cost> pQ = new PriorityQueue<>();
         pQ.offer(new Cost(startNum, 0));
@@ -119,7 +124,7 @@ public class Subway {
             for (Cost ob : subwayGraph.get(now)) {
                 if (costMap.get(ob.number) > ob.cost + nowCost) {
                     costMap.put(ob.number, (ob.cost + nowCost));
-                    System.out.println(ob.number + " " + (ob.cost + nowCost));
+                    //System.out.println(ob.number + " " + (ob.cost + nowCost));
                     pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
                     trackRoute.put(ob.number, now);
                 }
