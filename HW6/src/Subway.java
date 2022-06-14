@@ -40,7 +40,7 @@ public class Subway {
                     continue;
                 }
 
-                if (isFirst) { // 역 정보 input
+                if (isFirst) {
                     String[] stationInfo = str.split(" ");
                     String num = stationInfo[0];
                     String name = stationInfo[1];
@@ -56,7 +56,7 @@ public class Subway {
                     }
 
                     costMap.put(num, Long.MAX_VALUE);
-                } else { // 경로 정보 input
+                } else {
                     String[] routeInfo = str.split(" ");
                     String start = routeInfo[0];
                     String goal = routeInfo[1];
@@ -76,8 +76,6 @@ public class Subway {
             e.printStackTrace();
         }
 
-        // 환승역끼리도 경로 생성, cost 0
-
         for (String key : stationMap.keySet()) {
             ArrayList<String> stationList = stationMap.get(key);
             int size = stationList.size();
@@ -96,12 +94,11 @@ public class Subway {
                 }
             }
         }
-
     }
 
     private static void findShortestPath(String input) {
 
-        for(String num: stations.keySet()){
+        for (String num : stations.keySet()) {
             costMap.put(num, Long.MAX_VALUE);
         }
 
@@ -111,9 +108,6 @@ public class Subway {
 
         String startNum = stationMap.get(start).get(0);
         String goalNum = stationMap.get(goal).get(0);
-
-        //System.out.println(start + " " + startNum);
-        //System.out.println(goal + " " + goalNum);
 
         PriorityQueue<Cost> pQ = new PriorityQueue<>();
         pQ.offer(new Cost(startNum, 0));
@@ -126,7 +120,6 @@ public class Subway {
             for (Cost ob : subwayGraph.get(now)) {
                 if (costMap.get(ob.number) > ob.cost + nowCost) {
                     costMap.put(ob.number, (ob.cost + nowCost));
-                    //System.out.println(ob.number + " " + (ob.cost + nowCost));
                     pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
                     trackRoute.put(ob.number, now);
                 }
@@ -138,7 +131,6 @@ public class Subway {
         while (true) {
             stack.push(tempNum);
             tempNum = trackRoute.get(tempNum);
-            System.out.println(tempNum + " " + startNum);
             if (tempNum.equals(startNum)) {
                 stack.push(tempNum);
                 break;
@@ -150,28 +142,29 @@ public class Subway {
         while (!stack.isEmpty()) {
             String num = stack.pop();
             String name = stations.get(num);
-            if(route.size()==0){
+            if (route.size() == 0) {
                 route.add(name);
             } else {
-                if(route.get(route.size()-1).equals(name)){
-                    route.set(route.size()-1, "["+route.get(route.size()-1)+"]");
+                if (route.get(route.size() - 1).equals(name)) {
+                    route.set(route.size() - 1, "[" + route.get(route.size() - 1) + "]");
                 } else {
                     route.add(name);
                 }
             }
         }
 
-        // TODO: 확인 필요
+        if (route.get(0).contains("[")) costMap.put(goalNum, costMap.get(goalNum) - 5);
+        if (route.get(route.size() - 1).contains("[")) costMap.put(goalNum, costMap.get(goalNum) - 5);
+
         route.set(0, route.get(0).replace("[", ""));
         route.set(0, route.get(0).replace("]", ""));
-        route.set(route.size()-1, route.get(route.size()-1).replace("[", ""));
-        route.set(route.size()-1, route.get(route.size()-1).replace("]", ""));
+        route.set(route.size() - 1, route.get(route.size() - 1).replace("[", ""));
+        route.set(route.size() - 1, route.get(route.size() - 1).replace("]", ""));
 
-        for(String name: route){
-            // TODO: 마지막 공백 삭제
-            System.out.print(name + " ");
+        for (int i = 0; i < route.size() - 1; i++) {
+            System.out.print(route.get(i) + " ");
         }
-        System.out.println();
+        System.out.println(route.get(route.size() - 1));
         System.out.println(costMap.get(goalNum));
     }
 }
