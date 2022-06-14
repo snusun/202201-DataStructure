@@ -1,6 +1,6 @@
 public class Cost implements Comparable<Cost>{
     String number;
-    long cost;
+    long cost=0;
 
     Cost(String number){
         this.number = number;
