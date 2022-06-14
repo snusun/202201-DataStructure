@@ -77,6 +77,7 @@ public class Subway {
         }
 
         // 환승역끼리도 경로 생성, cost 0
+
         for (String key : stationMap.keySet()) {
             ArrayList<String> stationList = stationMap.get(key);
             int size = stationList.size();
@@ -87,14 +88,15 @@ public class Subway {
                     String goal = stationList.get(j);
                     if (subwayGraph.get(start) == null) {
                         ArrayList<Cost> costList = new ArrayList<>();
-                        costList.add(new Cost(goal));
+                        costList.add(new Cost(goal, 5));
                         subwayGraph.put(start, costList);
                     } else {
-                        subwayGraph.get(start).add(new Cost(goal));
+                        subwayGraph.get(start).add(new Cost(goal, 5));
                     }
                 }
             }
         }
+
     }
 
     private static void findShortestPath(String input) {
@@ -136,6 +138,7 @@ public class Subway {
         while (true) {
             stack.push(tempNum);
             tempNum = trackRoute.get(tempNum);
+            System.out.println(tempNum + " " + startNum);
             if (tempNum.equals(startNum)) {
                 stack.push(tempNum);
                 break;
@@ -146,7 +149,6 @@ public class Subway {
 
         while (!stack.isEmpty()) {
             String num = stack.pop();
-            //System.out.print(stations.get(num) + " ");
             String name = stations.get(num);
             if(route.size()==0){
                 route.add(name);
