@@ -18,10 +18,6 @@ public class Cost implements Comparable<Cost>{
 
     @Override
     public int compareTo(Cost o) {
-        if(this.cost > o.cost) {
-            return 1;
-        } else if(this.cost < o.cost){
-            return -1;
-        } else return 0;
+        return Long.compare(this.cost, o.cost);
     }
 }

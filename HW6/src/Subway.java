@@ -1,15 +1,14 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Subway {
     //static ArrayList<ArrayList<Station>> subwayGraph;
-    static Map<String, ArrayList<String>> stationMap = new HashMap<>();
+    static Map<String, String> stations = new HashMap<>(); // number, name
+    static Map<String, ArrayList<String>> stationMap = new HashMap<>(); // name numberList
     static Map<String, ArrayList<Cost>> subwayGraph = new HashMap<>();
-    static Map<String, Long> costMap = new HashMap<>();
+    static Map<String, Long> costMap = new HashMap<>(); // number, cost
+    static Map<String, String> trackRoute = new HashMap<>(); // number, number
 
     public static void main(String[] args) {
         makeGraph(args[0]);
@@ -50,6 +49,9 @@ public class Subway {
                     String[] stationInfo = str.split(" ");
                     String num = stationInfo[0];
                     String name = stationInfo[1];
+
+                    stations.put(num, name);
+
                     if (stationMap.get(name) == null) {
                         ArrayList<String> stationList = new ArrayList<>();
                         stationList.add(num);
@@ -75,13 +77,10 @@ public class Subway {
                         subwayGraph.get(start).add(new Cost(goal, cost));
                     }
                 }
-
-                //System.out.println(str);
             }
             reader.close();
         } catch (Exception e) {
             e.printStackTrace();
-            //System.out.println("File not found");
         }
 
         // 환승역끼리도 경로 생성, cost 0
@@ -90,7 +89,7 @@ public class Subway {
             int size = stationList.size();
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    if(i==j) continue;
+                    if (i == j) continue;
                     String start = stationList.get(i);
                     String goal = stationList.get(j);
                     if (subwayGraph.get(start) == null) {
@@ -103,19 +102,9 @@ public class Subway {
                 }
             }
         }
-
-//        for (String key : subwayGraph.keySet()) {
-//            for (Cost num : subwayGraph.get(key)) {
-//                System.out.print(num + " ");
-//            }
-//            System.out.println();
-//        }
     }
 
     private static void findShortestPath(String input) {
-        // find shortest path 다익스트라
-        // 노션 참고
-
         String[] findPath = input.split(" ");
         String start = findPath[0];
         String goal = findPath[1];
@@ -127,25 +116,35 @@ public class Subway {
         pQ.offer(new Cost(startNum, 0));
         //dis[v] = 0;
         costMap.put(start, 0L);
-        while (!pQ.isEmpty()){
+        while (!pQ.isEmpty()) {
             Cost temp = pQ.poll();
             String now = temp.number;
             long nowCost = temp.cost;
-            if(costMap.get(now)<nowCost) continue;
+            if (costMap.get(now) < nowCost) continue;
             //if(dis[now]<nowCost) continue;
-            for(Cost ob: subwayGraph.get(now)){
-                if(costMap.get(ob.number)>ob.cost+nowCost){
+            for (Cost ob : subwayGraph.get(now)) {
+                if (costMap.get(ob.number) > ob.cost + nowCost) {
                     costMap.put(ob.number, (ob.cost + nowCost));
                     pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
+                    trackRoute.put(ob.number, now);
                 }
             }
-//            for(Cost ob: graph.get(now)){
-//                if(dis[ob.vex]>ob.cost+nowCost){
-//                    dis[ob.vex] = ob.cost + nowCost;
-//                    pQ.offer(new Cost(ob.vex, dis[ob.vex]));
-//                }
-//            }
         }
+
+        Stack<String> stack = new Stack<>();
+        while (true) {
+            stack.push(goalNum);
+            goalNum = trackRoute.get(goalNum);
+            if (goalNum.equals(startNum)) {
+                stack.push(goalNum);
+                break;
+            }
+        }
+        while (!stack.isEmpty()) {
+            String num = stack.pop();
+            System.out.print(stations.get(num) + " ");
+        }
+        System.out.println();
         System.out.println(costMap.get(goalNum));
     }
 }
