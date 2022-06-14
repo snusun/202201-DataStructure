@@ -113,6 +113,7 @@ public class Subway {
         for(String sNum :stationMap.get(start)){
             String gNum = dijkstra(sNum, stationMap.get(goal));
             if(total > costMap.get(goalNum)) {
+                total = costMap.get(goalNum);
                 startNum = sNum;
                 goalNum = gNum;
             }
@@ -198,6 +199,7 @@ public class Subway {
 
         for(String gNum: goals){
             if(totalGoalCost > costMap.get(gNum)){
+                totalGoalCost = costMap.get(gNum);
                 goalNum = gNum;
             }
         }
