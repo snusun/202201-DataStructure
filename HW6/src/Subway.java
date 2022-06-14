@@ -13,7 +13,7 @@ public class Subway {
         makeGraph(args[0]);
         // ../text/subway.txt
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
         while (true) {
             try {
@@ -106,6 +106,7 @@ public class Subway {
         String start = findPath[0];
         String goal = findPath[1];
 
+        //System.out.println(start);
         String startNum = stationMap.get(start).get(0);
         String goalNum = stationMap.get(goal).get(0);
 
@@ -120,9 +121,18 @@ public class Subway {
             for (Cost ob : subwayGraph.get(now)) {
                 if (costMap.get(ob.number) > ob.cost + nowCost) {
                     costMap.put(ob.number, (ob.cost + nowCost));
+                    //System.out.println(ob.number + " " + (ob.cost + nowCost));
                     pQ.offer(new Cost(ob.number, costMap.get(ob.number)));
                     trackRoute.put(ob.number, now);
                 }
+            }
+        }
+
+        long totalGoalCost = costMap.get(goalNum);
+
+        for(String gNum: stationMap.get(goal)){
+            if(totalGoalCost > costMap.get(gNum)){
+                goalNum = gNum;
             }
         }
 
@@ -161,10 +171,20 @@ public class Subway {
         route.set(route.size() - 1, route.get(route.size() - 1).replace("[", ""));
         route.set(route.size() - 1, route.get(route.size() - 1).replace("]", ""));
 
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < route.size() - 1; i++) {
-            System.out.print(route.get(i) + " ");
+            sb.append(route.get(i)).append(" ");
+            //System.out.print(route.get(i) + " ");
         }
-        System.out.println(route.get(route.size() - 1));
-        System.out.println(costMap.get(goalNum));
+        sb.append(route.get(route.size()-1)).append("\n");
+        //System.out.println(route.get(route.size() - 1));
+        sb.append(costMap.get(goalNum));
+        //System.out.println(goalNum);
+        try{
+            PrintStream out = new PrintStream(System.out, true, "UTF-8");
+            System.setOut(out);
+            System.out.println(sb);
+        } catch (Exception e) {}
+        //System.out.println(costMap.get(goalNum));
     }
 }
